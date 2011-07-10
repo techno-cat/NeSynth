@@ -61,7 +61,7 @@ sub main {
 
 		my $t = 0.0;
 		for (my $i=0; $i<$size; $i++) {
-			if ( $interval < $t ) {
+			if ( $interval <= $t ) {
 				$t -= $interval;
 			}
 
