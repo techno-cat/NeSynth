@@ -16,6 +16,9 @@ my $beats = {
 # 1秒間に16分音符がなる回数
 my $bps = ($bpm / 60.0) * 4;
 
+# ノイズ
+my @noise = map { rand( 2.0 ) - 1.0; } 1..1024;
+
 sub create_oneshot {
 	my $freq = shift; # 音の周波数
 	my $time = shift; # 音の長さ(sec)
@@ -126,12 +129,12 @@ sub save_as_wav {
 	# ノイズ
 	my $osc_noise = sub {
 		my $x = shift; # 0.0 <= x < 1.0
-		return rand( 2.0 ) - 1.0;
+		return $x < 1.0 ? $noise[ $x * scalar(@noise) ] : 0.0;
 	};
 
-	my $wav_kick = create_oneshot( 50, 0.1, $osc_saw );
-	my $wav_snare = create_oneshot( 1000, 0.05, $osc_noise );
-	my $wav_hat = create_oneshot( 5000, 0.05, $osc_noise );
+	my $wav_kick = create_oneshot( 50, 0.07, $osc_saw );
+	my $wav_snare = create_oneshot( 3, 0.03, $osc_noise );
+	my $wav_hat = create_oneshot( 30, 0.04, $osc_noise );
 
 	my $ch_kick = to_wav( $beats->{kick}, $wav_kick );
 	my $ch_snare = to_wav( $beats->{snare}, $wav_snare );
@@ -141,7 +144,9 @@ sub save_as_wav {
 	my $size = scalar(@{$ch_kick});
 	my @samples = ();
 	for (my $i=0; $i<$size; $i++) {
-		my $val = $ch_kick->[$i] + $ch_snare->[$i] + $ch_hat->[$i];
+		my $val = $ch_kick->[$i];
+		$val   += $ch_snare->[$i] * 0.8;
+		$val   += $ch_hat->[$i] * 0.4;
 
 		# -1.0 〜 +1.0 になるようにクリップ
 		$val = ( 1.0 < $val ) ? 1.0 : (( $val < -1.0 ) ? -1.0 : $val );
