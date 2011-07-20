@@ -1,0 +1,14 @@
+ポリフォニックシンセ for Arduino
+
+Sine8mk2/
+    Arduino用ポリフォニックシンセ
+
+Scripts/
+    パラメータのCソース出力を行うperlスクリプト
+
+p5-NeSynth/
+    perlによるシンセ
+
+SandBox/
+    実験用perlスクリプト
+	（perl meets beatsもここ）
