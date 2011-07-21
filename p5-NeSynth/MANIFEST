@@ -1,0 +1,8 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/Sound-NeSynth.t
+t/Sound-WaveFile.t
+lib/Sound/NeSynth.pm
+lib/Sound/WaveFile.pm
