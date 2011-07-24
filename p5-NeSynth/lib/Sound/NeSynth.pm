@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Math::Trig qw( pi );
 
-use Sound::WaveFile qw(save_as_wav);
+use Sound::WaveFile qw( save_as_wav );
 
 our $VERSION = '0.01';
 
@@ -29,7 +29,8 @@ sub test_tone {
 		push @samples, $osc->( $i / ($samples_per_sec / $freq) );
 	}
 
-	Sound::WaveFile::save_as_wav( $filename, $samples_per_sec, $bits_per_sample, \@samples );
+	save_as_wav( $filename, $samples_per_sec, $bits_per_sample, \@samples );
+# Sound::WaveFile::save_as_wav( $filename, $samples_per_sec, $bits_per_sample, \@samples );
 }
 
 1;

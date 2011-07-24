@@ -3,6 +3,13 @@ package Sound::WaveFile;
 use strict;
 use warnings;
 use IO::File;
+use base qw( Exporter );
+
+our %EXPORT_TAGS = ( 'all' => [ qw(
+	save_as_wav	
+) ] );
+
+our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our $VERSION = '0.01';
 
