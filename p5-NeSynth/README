@@ -13,10 +13,10 @@ good idea to provide version information here so that people can
 decide whether fixes for the module are worth downloading.
 
 SYPNOSIS
-   use Sound::NeSynth qw(test_tone);
+   use Sound::NeSynth qw( test_tone );
    
    # 440Hz, 1sec => test.wav
-   Sound::NeSynth::test_tone( 'test.wav', 440, 1 );
+   test_tone( 'test.wav', 440, 1 );
 
 INSTALLATION
 

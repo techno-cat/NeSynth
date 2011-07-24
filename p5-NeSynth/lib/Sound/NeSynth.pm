@@ -4,8 +4,14 @@ use 5.008009;
 use strict;
 use warnings;
 use Math::Trig qw( pi );
-
 use Sound::WaveFile qw( save_as_wav );
+use base qw( Exporter );
+
+our %EXPORT_TAGS = ( 'all' => [ qw(
+	test_tone
+) ] );
+
+our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our $VERSION = '0.01';
 

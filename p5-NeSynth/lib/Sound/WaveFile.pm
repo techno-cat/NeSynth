@@ -6,7 +6,7 @@ use IO::File;
 use base qw( Exporter );
 
 our %EXPORT_TAGS = ( 'all' => [ qw(
-	save_as_wav	
+	save_as_wav
 ) ] );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
