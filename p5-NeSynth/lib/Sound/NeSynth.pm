@@ -36,12 +36,10 @@ sub test_tone {
 	}
 
 	save_as_wav( $filename, $samples_per_sec, $bits_per_sample, \@samples );
-# Sound::WaveFile::save_as_wav( $filename, $samples_per_sec, $bits_per_sample, \@samples );
 }
 
 1;
 __END__
-# Below is stub documentation for your module. You'd better edit it!
 
 =head1 NAME
 
@@ -49,18 +47,14 @@ Sound::NeSynth - Perl extension for Synthsis
 
 =head1 SYNOPSIS
 
-  use Sound::NeSynth;
+  use Sound::NeSynth qw( test_tone );
   
   # 440Hz, 1sec => test.wav
-  Sound::NeSynth::test_tone( 'test.wav', 440, 1 );
+  test_tone( 'test.wav', 440, 1 );
 
 =head1 DESCRIPTION
 
 perl meats groove!
-
-=head2 EXPORT
-
-None by default.
 
 =head1 SEE ALSO
 
@@ -75,7 +69,7 @@ techno-cat, E<lt>techno.cat.miau(at)gmail.comE<gt>
 Copyright (C) 2011 by techno-cat
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.13.10 or,
+it under the same terms as Perl itself, either Perl version 5.8.9 or,
 at your option, any later version of Perl 5 you may have available.
 
 
