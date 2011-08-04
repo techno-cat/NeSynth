@@ -1,5 +1,5 @@
 # Before `make install' is performed this script should be runnable with
-# `make test'. After `make install' it should work as `perl Sound-WaveFile.t'
+# `make test'. After `make install' it should work as `perl Sound-NeSynth.t'
 
 #########################
 
@@ -10,10 +10,10 @@ use warnings;
 
 use Test::More tests => 2;
 BEGIN {
-	use_ok( 'Sound::WaveFile' );
+	use_ok( 'Sound::NeSynth' );
 };
 
-can_ok( 'Sound::WaveFile', 'save_as_wav' );
+can_ok( 'Sound::NeSynth', 'test_tone' );
 
 #########################
 
