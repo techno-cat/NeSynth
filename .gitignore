@@ -1,0 +1,15 @@
+# File of MacVim
+*~
+*.swp
+
+# mac os file
+.DS_Store
+
+# Created at "perl MakeFile.PL"
+MYMETA.yml
+Makefile
+blib/
+pm_to_blib
+
+# Result file
+*.wav
