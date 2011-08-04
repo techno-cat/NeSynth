@@ -13,11 +13,44 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our $VERSION = '0.01';
 
+# そのまま返す
+sub _through {
+	return shift;
+}
+
+# 量子化ビット数が8bitの場合
+# 最小0, 最大255, オフセット128
+sub _nor_to_08 {
+	my $sample = shift;
+	my $val = int($sample * 127.0) + 128;
+	return pack( 'C', $val );
+}
+
+# 量子化ビット数が16bitの場合
+# 最小-32768, 最大32767, オフセット0
+sub _nor_to_16 {
+	my $sample = shift;
+	my $val = int($sample * 32767.0);
+	return pack( 's', $val );
+}
+
 sub save_as_wav {
 	my $file_name = shift;
 	my $samples_per_sec = shift; # 周波数
 	my $bits_per_sample = shift; # 量子化ビット数
 	my $samples_ref = shift;
+
+	# -1.0〜+1.0を量子化ビット数に従って整数に変換する
+	my $to_fixed_func = \&_through;
+	if ( $bits_per_sample == 8 ) {
+		$to_fixed_func = \&_nor_to_08;
+	}
+	elsif ( $bits_per_sample == 16 ) {
+		$to_fixed_func = \&_nor_to_16;
+	}
+	else {
+		die 'Unsupported format.';
+	}
 
 	my $size = scalar(@{$samples_ref}) * ($bits_per_sample / 8);
 	my $header =
@@ -44,24 +77,8 @@ sub save_as_wav {
 	print $fh $fmt_chunk;
 	print $fh $data_chunk;
 
-	if ( $bits_per_sample == 8 ) {
-		# 量子化ビット数が8bitの場合
-		# 最小0, 最大255, オフセット128
-		foreach my $sample (@{$samples_ref}) {
-			my $val = int($sample * 127.0) + 128;
-			print $fh pack( 'C', $val );
-		}
-	}
-	elsif ( $bits_per_sample == 16 ) {
-		# 量子化ビット数が16bitの場合
-		# 最小-32768, 最大32767, オフセット0
-		foreach my $sample (@{$samples_ref}) {
-			my $val = int($sample * 32767.0);
-			print $fh pack( 's', $val );
-		}
-	}
-	else {
-		die 'Unsupported format.';
+	foreach my $sample (@{$samples_ref}) {
+		print $fh $to_fixed_func->( $sample );
 	}
 
 	$fh->close();
