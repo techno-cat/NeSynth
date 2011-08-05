@@ -8,7 +8,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 11;
+use Test::More tests => 13;
 BEGIN {
 	use_ok( 'Sound::WaveFile' );
 	use_ok( 'Sound::WaveFile', qw(save_as_wav) );
@@ -23,5 +23,8 @@ ok( Sound::WaveFile::_nor_to_08(-1.0) eq pack('C', (-127 + 128)) );
 ok( Sound::WaveFile::_nor_to_16( 1.0) eq pack('s',  32767) );
 ok( Sound::WaveFile::_nor_to_16( 0.0) eq pack('s',      0) );
 ok( Sound::WaveFile::_nor_to_16(-1.0) eq pack('s', -32767) );
+
+ok( Sound::WaveFile::BITS_PER_SAMPLES_08 ==  8 );
+ok( Sound::WaveFile::BITS_PER_SAMPLES_16 == 16 );
 
 #########################

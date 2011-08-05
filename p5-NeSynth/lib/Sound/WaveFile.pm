@@ -5,6 +5,11 @@ use warnings;
 use IO::File;
 use base qw( Exporter );
 
+BEGIN {
+	sub BITS_PER_SAMPLES_08 { return  8; }
+	sub BITS_PER_SAMPLES_16 { return 16; }
+}
+
 our %EXPORT_TAGS = ( 'all' => [ qw(
 	save_as_wav
 ) ] );
@@ -42,10 +47,10 @@ sub save_as_wav {
 
 	# -1.0〜+1.0を量子化ビット数に従って整数に変換する
 	my $to_fixed_func = \&_through;
-	if ( $bits_per_sample == 8 ) {
+	if ( $bits_per_sample == BITS_PER_SAMPLES_08 ) {
 		$to_fixed_func = \&_nor_to_08;
 	}
-	elsif ( $bits_per_sample == 16 ) {
+	elsif ( $bits_per_sample == BITS_PER_SAMPLES_16 ) {
 		$to_fixed_func = \&_nor_to_16;
 	}
 	else {
