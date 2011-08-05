@@ -102,11 +102,12 @@ Sound::WaveFile - output as wav-format
 
 =head1 SYNOPSIS
 
+  use Sound::WaveFile;
   use Sound::WaveFile qw( save_as_wav );
 
   # 1sec => test.wav
   my @samples = map { 0.0; } 1..44100; # silence samples
-  save_as_wav( 'test.wav', 44100, 16, \@samples );
+  save_as_wav( 'test.wav', 44100, BITS_PER_SAMPLE_16, \@samples );
 
 =head1 DESCRIPTION
 
