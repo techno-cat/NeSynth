@@ -8,11 +8,15 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+#use Test::More tests => ;
+use Test::More 'no_plan';
 BEGIN {
 	use_ok( 'Sound::NeSynth' );
 };
 
 can_ok( 'Sound::NeSynth', 'test_tone' );
+can_ok( 'Sound::NeSynth', 'new' );
+
+my $synth = Sound::NeSynth->new();
 
 #########################

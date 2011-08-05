@@ -8,7 +8,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+#use Test::More tests => ;
+use Test::More 'no_plan';
 BEGIN {
 	use_ok( 'Sound::WaveFile' );
 	use_ok( 'Sound::WaveFile', qw(save_as_wav) );
