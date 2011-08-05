@@ -24,7 +24,7 @@ ok( Sound::WaveFile::_nor_to_16( 1.0) eq pack('s',  32767) );
 ok( Sound::WaveFile::_nor_to_16( 0.0) eq pack('s',      0) );
 ok( Sound::WaveFile::_nor_to_16(-1.0) eq pack('s', -32767) );
 
-ok( Sound::WaveFile::BITS_PER_SAMPLES_08 ==  8 );
-ok( Sound::WaveFile::BITS_PER_SAMPLES_16 == 16 );
+ok( BITS_PER_SAMPLE_08 ==  8 );
+ok( BITS_PER_SAMPLE_16 == 16 );
 
 #########################

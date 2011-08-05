@@ -4,6 +4,7 @@ use 5.008009;
 use strict;
 use warnings;
 use Math::Trig qw( pi );
+use Sound::WaveFile; 
 use Sound::WaveFile qw( save_as_wav );
 use base qw( Exporter );
 
@@ -22,7 +23,7 @@ sub test_tone {
 	my $sec = shift;
 
 	my $samples_per_sec = 44100;
-	my $bits_per_sample = 16;
+	my $bits_per_sample = BITS_PER_SAMPLE_16;
 
 	my $osc = sub {
 		my $x = shift;
