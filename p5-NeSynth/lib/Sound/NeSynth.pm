@@ -16,7 +16,11 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our $VERSION = '0.01';
 
-# Preloaded methods go here.
+sub new {
+	my $pkg = shift;
+	bless {};
+}
+
 sub test_tone {
 	my $filename = shift;
 	my $freq = shift;
