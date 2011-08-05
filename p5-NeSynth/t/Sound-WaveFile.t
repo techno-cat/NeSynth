@@ -8,16 +8,20 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 11;
 BEGIN {
 	use_ok( 'Sound::WaveFile' );
+	use_ok( 'Sound::WaveFile', qw(save_as_wav) );
 };
 
-can_ok( 'Sound::WaveFile', 'save_as_wav' );
-can_ok( 'Sound::WaveFile', qw(_through _nor_to_08 _nor_to_16) );
+ok( Sound::WaveFile::_through(0) == 0 );
+ok( Sound::WaveFile::_through(pack('C', 128)) eq pack('C', 128) );
+ok( Sound::WaveFile::_through(pack('s',   0)) eq pack('s',   0) );
+ok( Sound::WaveFile::_nor_to_08( 1.0) eq pack('C', ( 127 + 128)) );
+ok( Sound::WaveFile::_nor_to_08( 0.0) eq pack('C', (   0 + 128)) );
+ok( Sound::WaveFile::_nor_to_08(-1.0) eq pack('C', (-127 + 128)) );
+ok( Sound::WaveFile::_nor_to_16( 1.0) eq pack('s', ( 32767)) );
+ok( Sound::WaveFile::_nor_to_16( 0.0) eq pack('s', (     0)) );
+ok( Sound::WaveFile::_nor_to_16(-1.0) eq pack('s', (-32767)) );
 
 #########################
-
-# Insert your test code below, the Test::More module is use()ed here so read
-# its man page ( perldoc Test::More ) for help writing this test script.
-
