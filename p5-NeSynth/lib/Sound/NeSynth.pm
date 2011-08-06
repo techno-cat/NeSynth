@@ -8,6 +8,8 @@ use Sound::WaveFile;
 use Sound::WaveFile qw( save_as_wav );
 use base qw( Exporter );
 
+use constant DEFAULT_SAMPLES_PER_SEC => 44100;
+
 our %EXPORT_TAGS = ( 'all' => [ qw(
 	test_tone
 ) ] );
@@ -18,7 +20,19 @@ our $VERSION = '0.01';
 
 sub new {
 	my $pkg = shift;
-	bless {};
+
+	# サンプリング周波数の設定
+	my $samples_per_sec = DEFAULT_SAMPLES_PER_SEC;
+	if ( 0 < scalar(@_) ) {
+		$samples_per_sec = shift;
+	}
+
+	bless { samples_per_sec => $samples_per_sec };
+}
+
+sub get_samples_per_sec {
+	my $self = shift;
+	return $self->{samples_per_sec};
 }
 
 sub test_tone {
@@ -26,7 +40,7 @@ sub test_tone {
 	my $freq = shift;
 	my $sec = shift;
 
-	my $samples_per_sec = 44100;
+	my $samples_per_sec = DEFAULT_SAMPLES_PER_SEC;
 	my $bits_per_sample = BITS_PER_SAMPLE_16;
 
 	my $osc = sub {

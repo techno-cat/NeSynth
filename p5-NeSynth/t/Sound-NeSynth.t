@@ -16,7 +16,9 @@ BEGIN {
 
 can_ok( 'Sound::NeSynth', 'test_tone' );
 can_ok( 'Sound::NeSynth', 'new' );
+can_ok( 'Sound::NeSynth', qw(get_samples_per_sec) );
 
 my $synth = Sound::NeSynth->new();
+ok( $synth->get_samples_per_sec() == 44100 );
 
 #########################
