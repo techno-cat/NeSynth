@@ -27,12 +27,31 @@ sub new {
 		$samples_per_sec = shift;
 	}
 
-	bless { samples_per_sec => $samples_per_sec };
+	bless {
+		samples_per_sec => $samples_per_sec,
+		samples_ref => []
+	};
 }
 
 sub get_samples_per_sec {
 	my $self = shift;
 	return $self->{samples_per_sec};
+}
+
+sub get_samples_count {
+	my $self = shift;
+	return scalar( @{$self->{samples_ref}} );
+}
+
+sub write {
+	my $self = shift;
+	my $filename = shift;
+
+	save_as_wav(
+		$filename,
+		$self->{samples_per_sec},
+		BITS_PER_SAMPLE_16,
+		$self->{samples_ref} );
 }
 
 sub test_tone {
@@ -41,7 +60,6 @@ sub test_tone {
 	my $sec = shift;
 
 	my $samples_per_sec = DEFAULT_SAMPLES_PER_SEC;
-	my $bits_per_sample = BITS_PER_SAMPLE_16;
 
 	my $osc = sub {
 		my $x = shift;
@@ -54,7 +72,11 @@ sub test_tone {
 		push @samples, $osc->( $i / ($samples_per_sec / $freq) );
 	}
 
-	save_as_wav( $filename, $samples_per_sec, $bits_per_sample, \@samples );
+	save_as_wav(
+		$filename,
+		$samples_per_sec,
+		BITS_PER_SAMPLE_16,
+		\@samples );
 }
 
 1;
