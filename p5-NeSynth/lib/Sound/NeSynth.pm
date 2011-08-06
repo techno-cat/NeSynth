@@ -11,7 +11,6 @@ use base qw( Exporter );
 use constant DEFAULT_SAMPLES_PER_SEC => 44100;
 
 our %EXPORT_TAGS = ( 'all' => [ qw(
-	test_tone
 ) ] );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
