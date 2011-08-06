@@ -55,28 +55,23 @@ sub write {
 }
 
 sub test_tone {
-	my $filename = shift;
+	my $self = shift;
 	my $freq = shift;
 	my $sec = shift;
-
-	my $samples_per_sec = DEFAULT_SAMPLES_PER_SEC;
 
 	my $osc = sub {
 		my $x = shift;
 		return sin( 2.0 * pi() * $x );
 	};
 
+	my $samples_per_sec = $self->{samples_per_sec};
 	my @samples = ();
 	my $cnt = $samples_per_sec * $sec;
 	for (my $i=0; $i<$cnt; $i++) {
 		push @samples, $osc->( $i / ($samples_per_sec / $freq) );
 	}
 
-	save_as_wav(
-		$filename,
-		$samples_per_sec,
-		BITS_PER_SAMPLE_16,
-		\@samples );
+	$self->{samples_ref} = \@samples;
 }
 
 1;
