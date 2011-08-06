@@ -83,10 +83,12 @@ Sound::NeSynth - Perl extension for Synthsis
 
 =head1 SYNOPSIS
 
-  use Sound::NeSynth qw( test_tone );
+  use Sound::NeSynth;
   
   # 440Hz, 1sec => test.wav
-  test_tone( 'test.wav', 440, 1 );
+  my $synth = new Sound::NeSynth->new();
+  $synth->test_tone( 440, 1 );
+  $synth->write( 'test.wav' );
 
 =head1 DESCRIPTION
 

@@ -2,19 +2,22 @@ Sound::NeSynth version 0.01
 ==========================
 
 SYPNOSIS
-   use Sound::NeSynth qw( test_tone );
-   
-   # 440Hz, 1sec => test.wav
-   test_tone( 'test.wav', 440, 1 );
+
+  use Sound::NeSynth;
+
+  # 440Hz, 1sec => test.wav
+  my $synth = new Sound::NeSynth->new();
+  $synth->test_tone( 440, 1 );
+  $synth->write( 'test.wav' );
 
 INSTALLATION
 
 To install this module type the following:
 
-   perl Makefile.PL
-   make
-   make test
-   make install
+  perl Makefile.PL
+  make
+  make test
+  make install
 
 DEPENDENCIES
 
