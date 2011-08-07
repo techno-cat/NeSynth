@@ -35,37 +35,43 @@ sub create_env {
 	};
 }
 
-=pod
-	my $osc = sub {
-		my $x = shift;
-		return sin( 2.0 * pi() * $x );
-	};
-=cut
-
 1;
 __END__
 
 =head1 NAME
 
-Sound::NeSynth - Perl extension for Synthsis
+Sound::NeSynth:Modulator - Modulator module for NeSynth
 
 =head1 SYNOPSIS
 
-  use Sound::NeSynth;
+  use Sound::NeSynth::Modulator;
   
-  # 440Hz, 1sec => test.wav
-  my $synth = new Sound::NeSynth->new();
-  $synth->test_tone( 440, 1 );
-  $synth->write( 'test.wav' );
+  my $samples_per_sec = 4;
+  my $freq = 1;
+  my $osc = create_osc( $samples_per_sec, $freq );
+
+  $osc->(); #  0.0
+  $osc->(); #  1.0
+  $osc->(); #  0.0
+  $osc->(); # -1.0
+  $osc->(); #  0.0
+  $osc->(); #  1.0
+  # -- repeat --
 
 =head1 DESCRIPTION
 
-perl meats groove!
+=head2 create_osc
 
-=head1 SEE ALSO
+  samples per sec = 4
+  frequency 1(Hz)
 
-Sound::WaveFile
-
+      <-- 1sec --><-- 1sec -
++1.0  |  o           o
+      |
+ 0.0  o-----o-----o-----> t
+      |
++1.0  |        o
+  
 =head1 AUTHOR
 
 techno-cat, E<lt>techno.cat.miau(at)gmail.comE<gt>
