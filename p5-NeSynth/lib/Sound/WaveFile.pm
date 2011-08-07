@@ -11,10 +11,9 @@ BEGIN {
 }
 
 our %EXPORT_TAGS = ( 'all' => [ qw(
-	save_as_wav
 ) ] );
-
 our @EXPORT = qw(
+	save_as_wav
 	BITS_PER_SAMPLE_08
 	BITS_PER_SAMPLE_16
 );

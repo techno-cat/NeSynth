@@ -12,8 +12,9 @@ use warnings;
 use Test::More 'no_plan';
 BEGIN {
 	use_ok( 'Sound::WaveFile' );
-	use_ok( 'Sound::WaveFile', qw(save_as_wav) );
 };
+
+can_ok( 'Sound::WaveFile', qw(save_as_wav) );
 
 ok( Sound::WaveFile::_through(0) == 0 );
 ok( Sound::WaveFile::_through(pack('C', 128)) eq pack('C', 128) );

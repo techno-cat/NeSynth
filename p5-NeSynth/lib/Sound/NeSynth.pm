@@ -5,7 +5,6 @@ use strict;
 use warnings;
 use Math::Trig qw( pi );
 use Sound::WaveFile; 
-use Sound::WaveFile qw( save_as_wav );
 use base qw( Exporter );
 
 use constant DEFAULT_SAMPLES_PER_SEC => 44100;
