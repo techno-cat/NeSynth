@@ -3,8 +3,8 @@ package Sound::NeSynth;
 use 5.008009;
 use strict;
 use warnings;
-use Math::Trig qw( pi );
-use Sound::WaveFile; 
+use Sound::WaveFile;
+use Sound::NeSynth::Modulator;
 use base qw( Exporter );
 
 use constant DEFAULT_SAMPLES_PER_SEC => 44100;
@@ -57,17 +57,9 @@ sub test_tone {
 	my $freq = shift;
 	my $sec = shift;
 
-	my $osc = sub {
-		my $x = shift;
-		return sin( 2.0 * pi() * $x );
-	};
-
-	my $samples_per_sec = $self->{samples_per_sec};
-	my @samples = ();
-	my $cnt = $samples_per_sec * $sec;
-	for (my $i=0; $i<$cnt; $i++) {
-		push @samples, $osc->( $i / ($samples_per_sec / $freq) );
-	}
+	my $osc = create_osc( $self->{samples_per_sec}, $freq ); 
+	my $cnt = $self->{samples_per_sec} * $sec;
+	my @samples = map{ $osc->(); } 1..$cnt;
 
 	$self->{samples_ref} = \@samples;
 }
