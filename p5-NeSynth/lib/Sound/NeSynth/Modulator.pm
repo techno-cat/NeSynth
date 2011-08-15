@@ -20,6 +20,13 @@ our $VERSION = '0.01';
 sub create_osc {
 	my $samples_per_sec = shift;
 	my $freq = shift;
+
+	if ( $freq <= 0.0 ) {
+		return sub {
+			return 0.0;
+		};
+	}
+
 	my $t = 0;
 	return sub {
 		my $ret = sin( (2.0 * pi() * $t) / ($samples_per_sec / $freq) );
