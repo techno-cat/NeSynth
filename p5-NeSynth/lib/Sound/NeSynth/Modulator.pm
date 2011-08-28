@@ -3,8 +3,8 @@ package Sound::NeSynth::Modulator;
 use 5.008009;
 use strict;
 use warnings;
+use Readonly;
 use Math::Trig qw( pi );
-use Sound::WaveFile; 
 use base qw( Exporter );
 
 our %EXPORT_TAGS = ( 'all' => [ qw(
@@ -17,22 +17,28 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our $VERSION = '0.01';
 
+Readonly my $FREQ_MIN => 0.001;
+
 sub create_osc {
 	my $samples_per_sec = shift;
 	my $freq = shift;
 
-	if ( $freq <= 0.0 ) {
+	if ( $freq < 0.0 ) {
+		die "Can't use under 0 as frequency.";
+	}
+	elsif ( $freq < $FREQ_MIN ) {
 		return sub {
 			return 0.0;
 		};
 	}
-
-	my $t = 0;
-	return sub {
-		my $ret = sin( (2.0 * pi() * $t) / ($samples_per_sec / $freq) );
-		$t++;
-		return $ret;
-	};
+	else {
+		my $t = 0;
+		return sub {
+			my $ret = sin( (2.0 * pi() * $t) / ($samples_per_sec / $freq) );
+			$t++;
+			return $ret;
+		};
+	}
 }
 
 sub create_env {
