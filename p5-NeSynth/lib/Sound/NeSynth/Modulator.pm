@@ -17,6 +17,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our $VERSION = '0.01';
 
+
 Readonly my $FREQ_MIN => 0.001;
 
 sub create_osc {
@@ -24,7 +25,7 @@ sub create_osc {
 	my $freq = shift;
 
 	if ( $freq < 0.0 ) {
-		die "Can't use under 0 as frequency.";
+		die "Can't use negative number as frequency.";
 	}
 	elsif ( $freq < $FREQ_MIN ) {
 		return sub {
