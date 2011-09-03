@@ -20,13 +20,13 @@ our $VERSION = '0.01';
 sub _note_to_freq {
 	my $scale = shift;
 	my %scales = (
-		A => 0,
-		B => 2,
-		C => 3,
-		D => 5,
-		E => 7,
-		F => 8,
-		G => 10
+		C => -9,
+		D => -7,
+		E => -5,
+		F => -4,
+		G => -2,
+		A =>  0,
+		B =>  2
 	);
 
 	my @parsed = ( $scale =~ /[A-G]/g );
