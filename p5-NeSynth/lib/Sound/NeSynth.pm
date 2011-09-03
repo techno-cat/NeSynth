@@ -116,7 +116,7 @@ Sound::NeSynth - Perl extension for Synthsis
   
   # 440Hz, 1sec => test.wav
   my $synth = new Sound::NeSynth->new();
-  $synth->test_tone( 440, 1 );
+  $synth->test_tone({ freq => 440, sec => 1 });
   $synth->write( 'test.wav' );
 
 =head1 DESCRIPTION
