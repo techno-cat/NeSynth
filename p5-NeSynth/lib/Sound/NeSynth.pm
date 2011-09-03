@@ -93,8 +93,8 @@ sub test_tone {
 	my $self = shift;
 	my $arg_ref = shift;
 
-	my $freq = ( exists $arg_ref->{freq} ) ? $arg_ref->{freq} : 44100;
-	my $sec  = ( exists $arg_ref->{sec}  ) ? $arg_ref->{sec}  :     1;
+	my $freq = ( exists $arg_ref->{freq} ) ? $arg_ref->{freq} : 440;
+	my $sec  = ( exists $arg_ref->{sec}  ) ? $arg_ref->{sec}  :   1;
 
 	# overwrite
 	if ( exists $arg_ref->{note} ) {
