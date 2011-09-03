@@ -3,11 +3,10 @@ package Sound::NeSynth;
 use 5.008009;
 use strict;
 use warnings;
+use Readonly;
 use Sound::WaveFile;
 use Sound::NeSynth::Modulator;
 use base qw( Exporter );
-
-use constant DEFAULT_SAMPLES_PER_SEC => 44100;
 
 our %EXPORT_TAGS = ( 'all' => [ qw(
 ) ] );
@@ -16,22 +15,24 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our $VERSION = '0.01';
 
+Readonly my $DEFAULT_SAMPLES_PER_SEC => 44100;
+Readonly my %NOTE_TO_OFFSET => (
+	C => -9,
+	D => -7,
+	E => -5,
+	F => -4,
+	G => -2,
+	A =>  0,
+	B =>  2
+);
+
 # アルファベットと+/-で表現した音程から周波数に変換する
 sub _note_to_freq {
 	my $scale = shift;
-	my %scales = (
-		C => -9,
-		D => -7,
-		E => -5,
-		F => -4,
-		G => -2,
-		A =>  0,
-		B =>  2
-	);
 
 	my @parsed = ( $scale =~ /[A-G]/g );
 	if ( scalar(@parsed) == 1 ) {
-		my $idx = $scales{ $parsed[0] };
+		my $idx = $NOTE_TO_OFFSET{ $parsed[0] };
 		
 		if ( $scale =~ /\+/ ) {
 			$idx++;
@@ -52,7 +53,7 @@ sub new {
 	my $pkg = shift;
 
 	# サンプリング周波数の設定
-	my $samples_per_sec = DEFAULT_SAMPLES_PER_SEC;
+	my $samples_per_sec = $DEFAULT_SAMPLES_PER_SEC;
 	if ( 0 < scalar(@_) ) {
 		$samples_per_sec = shift;
 	}
