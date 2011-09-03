@@ -15,16 +15,19 @@ BEGIN {
 };
 
 can_ok( 'Sound::NeSynth', 'new' );
-can_ok( 'Sound::NeSynth', qw(get_samples_per_sec get_samples_count) );
-can_ok( 'Sound::NeSynth', qw(test_tone write) );
+can_ok( 'Sound::NeSynth', qw(get_samples_per_sec) );
+can_ok( 'Sound::NeSynth', qw(get_samples_count) );
+can_ok( 'Sound::NeSynth', qw(test_tone) );
+can_ok( 'Sound::NeSynth', qw(write) );
 
 ok( Sound::NeSynth->new()->get_samples_per_sec() == 44100 );
 ok( Sound::NeSynth->new( 22050 )->get_samples_per_sec() == 22050 );
 
 my $synth = Sound::NeSynth->new();
 ok( $synth->get_samples_count() == 0 );
-$synth->test_tone( 440, 1 );
+$synth->test_tone({ freq => 440, sec => 1 });
 ok( $synth->get_samples_count() == 44100 );
 
+ok( Sound::NeSynth::_note_to_freq('A') == 440.0 );
 
 #########################

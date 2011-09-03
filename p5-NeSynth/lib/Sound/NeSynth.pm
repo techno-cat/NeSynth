@@ -16,6 +16,38 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our $VERSION = '0.01';
 
+# アルファベットと+/-で表現した音程から周波数に変換する
+sub _note_to_freq {
+	my $scale = shift;
+	my %scales = (
+		A => 0,
+		B => 2,
+		C => 3,
+		D => 5,
+		E => 7,
+		F => 8,
+		G => 10
+	);
+
+	my @parsed = ( $scale =~ /[A-G]/g );
+	if ( scalar(@parsed) == 1 ) {
+		my $idx = $scales{ $parsed[0] };
+		
+		if ( $scale =~ /\+/ ) {
+			$idx++;
+		}
+
+		if ( $scale =~ /\-/ ) {
+			$idx--;
+		}
+
+		return 440.0 * ( 2 ** ($idx / 12.0) );
+	}
+	else {
+		return 0;
+	}
+}
+
 sub new {
 	my $pkg = shift;
 
@@ -54,8 +86,15 @@ sub write {
 
 sub test_tone {
 	my $self = shift;
-	my $freq = shift;
-	my $sec = shift;
+	my $arg_ref = shift;
+
+	my $freq = ( exists $arg_ref->{freq} ) ? $arg_ref->{freq} : 44100;
+	my $sec  = ( exists $arg_ref->{sec}  ) ? $arg_ref->{sec}  :     1;
+
+	# overwrite
+	if ( exists $arg_ref->{note} ) {
+		$freq = _note_to_freq( $arg_ref->{note} );
+	}
 
 	my $osc = create_osc( $self->{samples_per_sec}, $freq ); 
 	my $cnt = $self->{samples_per_sec} * $sec;
