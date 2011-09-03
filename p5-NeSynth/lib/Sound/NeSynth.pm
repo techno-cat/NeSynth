@@ -16,6 +16,10 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our $VERSION = '0.01';
 
 Readonly my $DEFAULT_SAMPLES_PER_SEC => 44100;
+
+#     C#    D#          F#    G#    A#
+#  C     D     E     F     G     A     B
+# -9    -7    -5    -4    -2     0    +2
 Readonly my %NOTE_TO_OFFSET => (
 	C => -9,
 	D => -7,
