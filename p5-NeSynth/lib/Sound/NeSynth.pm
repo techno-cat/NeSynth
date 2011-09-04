@@ -60,6 +60,7 @@ sub _note_to_freq {
 		return $FREQ_OF_A3 * ( 2 ** ($idx / 12.0) );
 	}
 	else {
+		warn '"' . $note . '" is not note.';
 		return 0;
 	}
 }
