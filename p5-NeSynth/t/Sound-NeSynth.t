@@ -32,4 +32,8 @@ ok( Sound::NeSynth::_note_to_freq('A2') == 220.0 );
 ok( Sound::NeSynth::_note_to_freq('A3') == 440.0 );
 ok( Sound::NeSynth::_note_to_freq('A4') == 880.0 );
 
+ok( Sound::NeSynth::_note_to_freq('A4') < Sound::NeSynth::_note_to_freq('A+4') );
+ok( Sound::NeSynth::_note_to_freq('A-4') < Sound::NeSynth::_note_to_freq('A4') );
+ok( Sound::NeSynth::_note_to_freq('E+4') == Sound::NeSynth::_note_to_freq('F4') );
+
 #########################
