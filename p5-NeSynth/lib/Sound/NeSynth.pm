@@ -46,10 +46,10 @@ sub _note_to_freq {
 	
 		# A3の場合、$idx=0で440Hzが算出される
 		foreach my $ch (@tmp) {
-			if ( $ch =~ /\+/ ) {
+			if ( $ch eq '+' ) {
 				$idx++;
 			}
-			elsif ( $ch =~ /\-/ ) {
+			elsif ( $ch eq '-' ) {
 				$idx--;
 			}
 			else { 
