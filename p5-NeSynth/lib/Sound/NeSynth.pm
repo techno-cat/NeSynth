@@ -30,23 +30,34 @@ Readonly my %NOTE_TO_OFFSET => (
 	B =>  2
 );
 
+# オクターブ = +3, ラの音の周波数
+Readonly my $FREQ_OF_A3 => 440.0;
+
 # アルファベットと+/-で表現した音程から周波数に変換する
 sub _note_to_freq {
-	my $scale = shift;
+	my $note = shift;
 
-	my @parsed = ( $scale =~ /[A-G]/g );
-	if ( scalar(@parsed) == 1 ) {
-		my $idx = $NOTE_TO_OFFSET{ $parsed[0] };
-		
-		if ( $scale =~ /\+/ ) {
-			$idx++;
+	# MIDIだとオクターブは-2から+8まであるが、
+	# 0から+8までサポートする
+
+	if ( $note =~ /^[A-G][+|-]?[0-8]?/ ) {
+		my @tmp = split //, $note;
+		my $idx = $NOTE_TO_OFFSET{ shift @tmp };
+	
+		# A3の場合、$idx=0で440Hzが算出される
+		foreach my $ch (@tmp) {
+			if ( $ch =~ /\+/ ) {
+				$idx++;
+			}
+			elsif ( $ch =~ /\-/ ) {
+				$idx--;
+			}
+			else { 
+				$idx += ( (int($ch) - 3) * 12 );
+			}
 		}
 
-		if ( $scale =~ /\-/ ) {
-			$idx--;
-		}
-
-		return 440.0 * ( 2 ** ($idx / 12.0) );
+		return $FREQ_OF_A3 * ( 2 ** ($idx / 12.0) );
 	}
 	else {
 		return 0;

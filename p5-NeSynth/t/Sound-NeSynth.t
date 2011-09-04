@@ -28,6 +28,8 @@ ok( $synth->get_samples_count() == 0 );
 $synth->test_tone({ freq => 440, sec => 1 });
 ok( $synth->get_samples_count() == 44100 );
 
-ok( Sound::NeSynth::_note_to_freq('A') == 440.0 );
+ok( Sound::NeSynth::_note_to_freq('A2') == 220.0 );
+ok( Sound::NeSynth::_note_to_freq('A3') == 440.0 );
+ok( Sound::NeSynth::_note_to_freq('A4') == 880.0 );
 
 #########################

@@ -12,7 +12,7 @@ $synth->test_tone({ freq => 440, sec => 1 });
 $synth->write( 'test.wav' );
 
 
-foreach my $note ( qw/C D E F G A B C/ ) {
+foreach my $note ( qw/C3 D3 E3 F3 G3 A3 B3 C4/ ) {
 	print $note . " => " . Sound::NeSynth::_note_to_freq( $note );
 	print "(Hz)\n";
 
