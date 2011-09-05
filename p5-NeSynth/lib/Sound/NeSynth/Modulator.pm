@@ -38,9 +38,15 @@ sub create_osc {
 	}
 	else {
 		my $t = 0;
+		my $samples_per_cycle = $samples_per_sec / $freq;
 		return sub {
-			my $ret = sin( (2.0 * pi() * $t) / ($samples_per_sec / $freq) );
+			if ( $samples_per_cycle < $t ) {
+				$t -= $samples_per_cycle;
+			}
+
+			my $ret = sin( 2.0 * pi() * ($t / $samples_per_cycle) );
 			$t++;
+
 			return $ret;
 		};
 	}
