@@ -28,6 +28,10 @@ sub create_osc {
 		die "Can't use negative number as frequency.";
 	}
 	elsif ( $freq < $FREQ_MIN ) {
+		if ( $freq != 0.0 ) {
+			warn $freq . ' is too small, so changed to 0.'
+		}
+
 		return sub {
 			return 0.0;
 		};
