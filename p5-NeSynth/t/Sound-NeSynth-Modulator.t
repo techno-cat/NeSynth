@@ -29,8 +29,10 @@ is( $no_osc->(), 0.0 );
 # frequency = -1.0Hz
 dies_ok{ create_osc(4, -1) };
 
-TODO: {
-	my $env = create_env( 0 );
-	todo_skip( $env->( 0 ), 0.0 );
-}
+my $env_flat = create_env( 0 );
+ok( $env_flat->() == 1.0 );
+ok( $env_flat->() == 1.0 );
+ok( $env_flat->() == 1.0 );
+ok( $env_flat->() == 1.0 );
+
 #########################
