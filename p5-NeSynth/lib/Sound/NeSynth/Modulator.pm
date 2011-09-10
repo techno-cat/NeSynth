@@ -10,6 +10,7 @@ use base qw( Exporter );
 our %EXPORT_TAGS = ( 'all' => [ qw(
 ) ] );
 our @EXPORT = qw(
+	create_modulator
 	create_osc
 	create_env
 );
@@ -19,6 +20,31 @@ our $VERSION = '0.01';
 
 
 Readonly my $FREQ_MIN => 0.001;
+
+sub create_modulator {
+	my $samples_per_sec = shift;
+	my $arg_ref = shift;
+
+	my $waveform = 'flat';
+	if ( not exists $arg_ref->{waveform} ) {
+		warn '"waveform" is required argument.'
+	}
+	else {
+		$waveform = $arg_ref->{waveform};
+	}
+
+	if ( $waveform eq 'flat' ) {
+		return sub {
+			return 1.0;
+		};
+	}
+	elsif ( $waveform eq 'env' ) {
+		return create_env( $samples_per_sec, $arg_ref->{sec});
+	}
+	else {
+		return create_osc( $samples_per_sec, $arg_ref->{freq} );
+	}
+}
 
 sub create_osc {
 	my $samples_per_sec = shift;
@@ -54,8 +80,19 @@ sub create_osc {
 
 sub create_env {
 	my $samples_per_sec = shift;
+	my $sec = shift;
+
+	my $t = 0.0;
+	my $interval = $samples_per_sec * $sec;
 	return sub {
-		return 1.0;
+		if ( $t < $interval ) {
+			my $ret = ($interval - $t) / $interval;
+			$t += 1.0;
+			return $ret;
+		}
+		else {
+			return 0.0;
+		}
 	};
 }
 
