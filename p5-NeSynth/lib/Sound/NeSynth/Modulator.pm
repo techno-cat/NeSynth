@@ -63,14 +63,10 @@ sub create_osc {
 	if ( $freq < 0.0 ) {
 		die "Can't use negative number as frequency.";
 	}
-	elsif ( $freq < $FREQ_MIN ) {
-		if ( $freq != 0.0 ) {
-			warn $freq . ' is too small, so changed to 0.'
-		}
 
-		return sub {
-			return 0.0;
-		};
+	if ( $freq < $FREQ_MIN ) {
+		warn $freq . ' is too small, so changed to 0.';
+		return sub { return 0.0; };
 	}
 	else {
 		my $t = 0.0;
