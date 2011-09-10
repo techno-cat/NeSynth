@@ -11,8 +11,6 @@ our %EXPORT_TAGS = ( 'all' => [ qw(
 ) ] );
 our @EXPORT = qw(
 	create_modulator
-	create_osc
-	create_env
 );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
@@ -33,22 +31,33 @@ sub create_modulator {
 		$waveform = $arg_ref->{waveform};
 	}
 
-	if ( $waveform eq 'flat' ) {
+	if ( $waveform eq 'flat' or $waveform eq 'env' ) {
+		my $env_func = sub { return 1.0; }; # flat
+		if ( $waveform eq 'env' ) {
+			$env_func = sub { return shift; }; # env
+		}
+
+		my $t = 0.0;
+		my $interval = $samples_per_sec * $arg_ref->{sec};
 		return sub {
-			return 1.0;
-		};
-	}
-	elsif ( $waveform eq 'env' ) {
-		return create_env( $samples_per_sec, $arg_ref->{sec});
+			if ( $t < $interval ) {
+				my $ret = $env_func->( ($interval - $t) / $interval );
+				$t += 1.0;
+				return $ret;
+			}
+			else {
+				return 0.0;
+			}
+		}
 	}
 	else {
-		return create_osc( $samples_per_sec, $arg_ref->{freq} );
+		return create_osc( $samples_per_sec, $arg_ref );
 	}
 }
 
 sub create_osc {
 	my $samples_per_sec = shift;
-	my $freq = shift;
+	my $freq = $arg_ref->{freq};
 
 	if ( $freq < 0.0 ) {
 		die "Can't use negative number as frequency.";
@@ -76,24 +85,6 @@ sub create_osc {
 			return $ret;
 		};
 	}
-}
-
-sub create_env {
-	my $samples_per_sec = shift;
-	my $sec = shift;
-
-	my $t = 0.0;
-	my $interval = $samples_per_sec * $sec;
-	return sub {
-		if ( $t < $interval ) {
-			my $ret = ($interval - $t) / $interval;
-			$t += 1.0;
-			return $ret;
-		}
-		else {
-			return 0.0;
-		}
-	};
 }
 
 1;
