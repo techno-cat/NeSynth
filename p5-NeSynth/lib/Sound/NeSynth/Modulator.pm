@@ -57,8 +57,9 @@ sub create_modulator {
 
 sub create_osc {
 	my $samples_per_sec = shift;
-	my $freq = $arg_ref->{freq};
+	my $arg_ref = shift;
 
+	my $freq = $arg_ref->{freq};
 	if ( $freq < 0.0 ) {
 		die "Can't use negative number as frequency.";
 	}
