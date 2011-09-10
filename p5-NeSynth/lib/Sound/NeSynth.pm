@@ -101,6 +101,26 @@ sub write {
 		$self->{samples_ref} );
 }
 
+sub one_shot {
+	my $self = shift;
+	my $arg_ref = shift;
+
+	if ( not exists $arg_ref->{osc} ) {
+		die '"osc" not found in arguments.'
+	}
+
+	if ( not exists $arg_ref->{amp} ) {
+		die '"amp" not found in arguments.'
+	}
+
+	my $osc = create_modulator( $self->{samples_per_sec}, $arg_ref->{osc} );
+	my $env = create_modulator( $self->{samples_per_sec}, $arg_ref->{amp} );
+	my $cnt = $self->{samples_per_sec} * $arg_ref->{amp}->{sec};
+	my @samples = map{ $osc->() * $env->(); } 1..$cnt;
+
+	$self->{samples_ref} = \@samples;
+}
+
 sub test_tone {
 	my $self = shift;
 	my $arg_ref = shift;
@@ -113,11 +133,10 @@ sub test_tone {
 		$freq = _note_to_freq( $arg_ref->{note} );
 	}
 
-	my $osc = create_osc( $self->{samples_per_sec}, $freq ); 
-	my $cnt = $self->{samples_per_sec} * $sec;
-	my @samples = map{ $osc->(); } 1..$cnt;
-
-	$self->{samples_ref} = \@samples;
+	$self->one_shot({
+		osc => { freq => $freq, waveform => 'sin' },
+		amp => { sec => $sec, waveform => 'flat' }
+	});
 }
 
 1;
