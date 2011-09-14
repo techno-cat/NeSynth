@@ -19,6 +19,20 @@ our $VERSION = '0.01';
 
 Readonly my $FREQ_MIN => 0.001;
 
+sub _create_mod_func {
+	my $waveform = shift;
+
+	if ( $waveform eq 'sin' ) {
+		return sub { return sin( 2.0 * pi() * $_[0] ); };
+	}
+	elsif ( $waveform eq 'env' ) {
+		return sub { return $_[0]; };
+	}
+	else { # ( $wavform eq 'flat' ) {
+		return sub { return 1.0; };
+	}
+}
+
 sub create_modulator {
 	my $samples_per_sec = shift;
 	my $arg_ref = shift;
@@ -32,16 +46,12 @@ sub create_modulator {
 	}
 
 	if ( $waveform eq 'flat' or $waveform eq 'env' ) {
-		my $env_func = sub { return 1.0; }; # flat
-		if ( $waveform eq 'env' ) {
-			$env_func = sub { return shift; }; # env
-		}
-
+		my $mod_func = _create_mod_func( $waveform );
 		my $t = 0.0;
 		my $interval = $samples_per_sec * $arg_ref->{sec};
 		return sub {
 			if ( $t < $interval ) {
-				my $ret = $env_func->( ($interval - $t) / $interval );
+				my $ret = $mod_func->( ($interval - $t) / $interval );
 				$t += 1.0;
 				return $ret;
 			}
@@ -69,6 +79,7 @@ sub create_osc {
 		return sub { return 0.0; };
 	}
 	else {
+		my $mod_func = _create_mod_func( $arg_ref->{waveform} );
 		my $t = 0.0;
 		my $samples_per_cycle = $samples_per_sec / $freq;
 		return sub {
@@ -76,7 +87,7 @@ sub create_osc {
 				$t -= $samples_per_cycle;
 			}
 
-			my $ret = sin( 2.0 * pi() * ($t / $samples_per_cycle) );
+			my $ret = $mod_func->( $t / $samples_per_cycle );
 			$t += 1.0;
 
 			return $ret;
