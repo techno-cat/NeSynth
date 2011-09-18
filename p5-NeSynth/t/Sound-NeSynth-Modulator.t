@@ -31,18 +31,19 @@ dies_ok{
 	create_modulator( 4, { waveform => 'sin', freq => -1 } )
 };
 
-my $env_flat = create_modulator( 4, { waveform => 'flat', sec => 1 } );
-ok( $env_flat->() == 1.0 );
-ok( $env_flat->() == 1.0 );
-ok( $env_flat->() == 1.0 );
-ok( $env_flat->() == 1.0 );
-ok( $env_flat->() == 0.0 );
+my $mod_flat = create_modulator( 4, { waveform => 'flat', sec => 1 } );
+ok( $mod_flat->() == 1.0 );
+ok( $mod_flat->() == 1.0 );
+ok( $mod_flat->() == 1.0 );
+ok( $mod_flat->() == 1.0 );
+ok( $mod_flat->() == 0.0 );
 
-my $env_env = create_modulator( 4, { waveform => 'env', sec => 1 } );
-ok( $env_env->() == 1.00 );
-ok( $env_env->() == 0.75 );
-ok( $env_env->() == 0.50 );
-ok( $env_env->() == 0.25 );
-ok( $env_env->() == 0.00 );
+my $mod_env = create_modulator( 4, { waveform => 'env', sec => 1 } );
+ok( $mod_env->() == 1.00 );
+ok( $mod_env->() == 0.75 );
+ok( $mod_env->() == 0.50 );
+ok( $mod_env->() == 0.25 );
+ok( $mod_env->() == 0.00 );
+ok( $mod_env->() == 0.00 );
 
 #########################
