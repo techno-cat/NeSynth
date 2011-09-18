@@ -26,7 +26,7 @@ sub _create_mod_func {
 		return sub { return sin( 2.0 * pi() * $_[0] ); };
 	}
 	elsif ( $waveform eq 'env' ) {
-		return sub { return $_[0]; };
+		return sub { return ( 1.0 - $_[0] ); };
 	}
 	else { # ( $wavform eq 'flat' ) {
 		return sub { return 1.0; };
@@ -49,9 +49,10 @@ sub create_modulator {
 		my $mod_func = _create_mod_func( $waveform );
 		my $t = 0.0;
 		my $interval = $samples_per_sec * $arg_ref->{sec};
+		printf( "%s, t = %s, interval = %s\n", $waveform, $t, $interval );
 		return sub {
 			if ( $t < $interval ) {
-				my $ret = $mod_func->( ($interval - $t) / $interval );
+				my $ret = $mod_func->( $t / $interval );
 				$t += 1.0;
 				return $ret;
 			}
@@ -79,16 +80,32 @@ sub create_osc {
 		return sub { return 0.0; };
 	}
 	else {
-		my $mod_func = _create_mod_func( $arg_ref->{waveform} );
+		my $mod_func = sub { return 1.0; };
+		my $mod_depth = 0.0;
+		if ( exists $arg_ref->{mod} ) {
+			my $sec = $arg_ref->{mod}->{speed};
+			$mod_func = create_modulator(
+				$samples_per_sec,
+				{
+					freq => ( 1.0 / $sec ),
+					sec => $sec,
+					waveform => $arg_ref->{mod}->{waveform}
+				}
+			);
+			$mod_depth = $arg_ref->{mod}->{depth};
+			printf( "sec = %f, depth = %f\n", $sec, $mod_depth );
+		}
+
+		my $osc_func = _create_mod_func( $arg_ref->{waveform} );
 		my $t = 0.0;
 		my $samples_per_cycle = $samples_per_sec / $freq;
 		return sub {
+			my $ret = $osc_func->( $t / $samples_per_cycle );
+
+			$t += ( 1.0 + ($mod_func->() * $mod_depth) );
 			while ( $samples_per_cycle <= $t ) {
 				$t -= $samples_per_cycle;
 			}
-
-			my $ret = $mod_func->( $t / $samples_per_cycle );
-			$t += 1.0;
 
 			return $ret;
 		};
