@@ -10,24 +10,20 @@ use Sound::NeSynth;
 my $synth = new Sound::NeSynth->new();
 
 my $tone_kick = {
-	osc => {
-		freq => 220,
-		waveform => 'sin'
-	},
-	amp => {
-		sec => 2.0,
-		waveform => 'env'
-	}
+	osc => { freq => 30, waveform => 'sin' },
+	amp => { sec => 0.35, waveform => 'env' }
 };
 
-my $mod_kick = { speed => 1.0, depth => 0.0, waveform => 'env' };
-$mod_kick->{depth} = 2.0;
-foreach my $speed ( 0.5, 1.0, 2.0, 4.0, 8.0, 16.0 ) {
-	$mod_kick->{speed} = $speed;
+my @mod_ptn = (
+	{ speed => 0.25, depth => 2.0, waveform => 'env' },
+	{ speed => 0.25, depth => 3.0, waveform => 'env' },
+	{ speed => 0.25, depth => 4.0, waveform => 'env' }
+);
 
-	$tone_kick->{osc}->{mod} = $mod_kick;
+for (my $i=0; $i<scalar(@mod_ptn); $i++) {
+	$tone_kick->{osc}->{mod} = $mod_ptn[$i];
 	$synth->one_shot( $tone_kick );
-	$synth->write( sprintf("kick_%.1f.wav", $speed) );
+	$synth->write( sprintf("kick_%d.wav", $i) );
 }
 
 __END__
