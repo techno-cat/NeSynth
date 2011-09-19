@@ -19,6 +19,7 @@ can_ok( 'Sound::NeSynth', qw(get_samples_per_sec) );
 can_ok( 'Sound::NeSynth', qw(get_samples_count) );
 can_ok( 'Sound::NeSynth', qw(test_tone) );
 can_ok( 'Sound::NeSynth', qw(write) );
+can_ok( 'Sound::NeSynth', qw(oneshot render) );
 
 ok( Sound::NeSynth->new()->get_samples_per_sec() == 44100 );
 ok( Sound::NeSynth->new( 22050 )->get_samples_per_sec() == 22050 );

@@ -65,6 +65,26 @@ sub _note_to_freq {
 	}
 }
 
+sub _create_oneshot {
+	my $samples_per_sec = shift;
+	my $arg_ref = shift;
+
+	if ( not exists $arg_ref->{osc} ) {
+		die '"osc" not found in arguments.'
+	}
+
+	if ( not exists $arg_ref->{amp} ) {
+		die '"amp" not found in arguments.'
+	}
+
+	my $osc = create_modulator( $samples_per_sec, $arg_ref->{osc} );
+	my $env = create_modulator( $samples_per_sec, $arg_ref->{amp} );
+	my $cnt = $samples_per_sec * $arg_ref->{amp}->{sec};
+	my @samples = map{ $osc->() * $env->(); } 1..$cnt;
+
+	return \@samples;
+}
+
 sub new {
 	my $pkg = shift;
 
@@ -101,22 +121,61 @@ sub write {
 		$self->{samples_ref} );
 }
 
-sub one_shot {
+sub oneshot {
 	my $self = shift;
 	my $arg_ref = shift;
 
-	if ( not exists $arg_ref->{osc} ) {
-		die '"osc" not found in arguments.'
+	$self->{samples_ref} = _create_oneshot( $self->{samples_per_sec}, $arg_ref );
+}
+
+sub render {
+	my $self = shift;
+	my $arg_ref = shift;
+
+	my $bps = $arg_ref->{bpm} * 60; # beats per sec
+	my $beats = $arg_ref->{beats};
+
+	my @channels = ();
+	foreach my $beat ( @{$beats} ) {
+		my $seq = $beat->{seq};
+		my $tone = $beat->{tone};
+
+		# oneshotの生成
+		my $oneshot_ref = _create_oneshot( $self->{samples_per_sec}, $tone );
+
+		# 必要な配列サイズを計算して初期化
+		my $seq_cnt = scalar( @{$seq} );
+		my $wav_size = ($seq_cnt - 1) * int($self->{samples_per_sec} / $bps) + length($oneshot_ref);
+		my @channel = map { 0.0; } 1..$wav_size;
+
+		for (my $i=0; $i<$seq_cnt; $i++) {
+			if ( $seq->[$i] ) {
+				my $offset = scalar(@{$seq}) * int($self->{samples_per_sec} / $bps);
+				map { $channel[$offset++] += $_; } @{$oneshot_ref};
+			}
+		}
+
+		push @channels, \@channel;
 	}
 
-	if ( not exists $arg_ref->{amp} ) {
-		die '"amp" not found in arguments.'
+	# ミックス
+	my @samples = ();
+	for (my $i=0; $i<scalar(@channels); $i++) {
+		my $ch = $channels[$i];
+		if ( scalar(@samples) < scalar(@{$ch}) ) {
+			my $cnt = scalar(@{$ch}) - scalar(@samples);
+			push @samples, ( map { 0.0; } (1..$cnt) );
+		}
+
+		for (my $i=0; $i<scalar(@{$ch}); $i++) {
+			$samples[$i] += ( $ch->[$i] * $beats->[$i]->{vol} );
+		}
 	}
 
-	my $osc = create_modulator( $self->{samples_per_sec}, $arg_ref->{osc} );
-	my $env = create_modulator( $self->{samples_per_sec}, $arg_ref->{amp} );
-	my $cnt = $self->{samples_per_sec} * $arg_ref->{amp}->{sec};
-	my @samples = map{ $osc->() * $env->(); } 1..$cnt;
+	# クリップ
+	@samples = map {
+		( 1.0 < $_ ) ? 1.0 : ( ($_ < -1.0) ? -1.0 : $_ );
+	} @samples;
 
 	$self->{samples_ref} = \@samples;
 }
@@ -133,7 +192,7 @@ sub test_tone {
 		$freq = _note_to_freq( $arg_ref->{note} );
 	}
 
-	$self->one_shot({
+	$self->oneshot({
 		osc => { freq => $freq, waveform => 'sin' },
 		amp => { sec => $sec, waveform => 'flat' }
 	});
