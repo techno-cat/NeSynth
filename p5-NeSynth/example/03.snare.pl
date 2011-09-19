@@ -17,7 +17,7 @@ my $tone_snare = {
 my @mod_ptn = (
 	{ speed => 0.10, depth => 8.0, waveform => 'noise' },
 	{ speed => 0.05, depth => 8.0, waveform => 'noise' },
-	{ speed => 0.04, depth => 8.0, waveform => 'noise' },
+	{ speed => 0.04, depth => 8.0, waveform => 'noise' }
 );
 
 for (my $i=0; $i<scalar(@mod_ptn); $i++) {
