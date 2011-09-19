@@ -132,7 +132,7 @@ sub render {
 	my $self = shift;
 	my $arg_ref = shift;
 
-	my $bps = $arg_ref->{bpm} * 60; # beats per sec
+	my $bps = ( $arg_ref->{bpm} / 60.0 ) * 4; # 1秒間に16分音符がなる回数
 	my $beats = $arg_ref->{beats};
 
 	my @channels = ();
@@ -150,10 +150,12 @@ sub render {
 
 		for (my $i=0; $i<$seq_cnt; $i++) {
 			if ( $seq->[$i] ) {
-				my $offset = scalar(@{$seq}) * int($self->{samples_per_sec} / $bps);
+				my $offset = $i * int($self->{samples_per_sec} / $bps);
 				map { $channel[$offset++] += $_; } @{$oneshot_ref};
 			}
 		}
+
+		print "created channel => " . scalar(@channel) . "\n";
 
 		push @channels, \@channel;
 	}
@@ -167,8 +169,8 @@ sub render {
 			push @samples, ( map { 0.0; } (1..$cnt) );
 		}
 
-		for (my $i=0; $i<scalar(@{$ch}); $i++) {
-			$samples[$i] += ( $ch->[$i] * $beats->[$i]->{vol} );
+		for (my $j=0; $j<scalar(@{$ch}); $j++) {
+			$samples[$j] += ( $ch->[$j] * $beats->[$i]->{vol} );
 		}
 	}
 
