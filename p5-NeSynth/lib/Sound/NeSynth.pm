@@ -134,6 +134,7 @@ sub render {
 
 	my $bps = ( $arg_ref->{bpm} / 60.0 ) * 4; # 1秒間に16分音符がなる回数
 	my $beats = $arg_ref->{beats};
+	my $swing = ( exists $arg_ref->{swing} ) ? $arg_ref->{swing} : 0.0;
 
 	my @channels = ();
 	foreach my $beat ( @{$beats} ) {
@@ -143,14 +144,26 @@ sub render {
 		# oneshotの生成
 		my $oneshot_ref = _create_oneshot( $self->{samples_per_sec}, $tone );
 
-		# 必要な配列サイズを計算して初期化
+		# 発音タイミングの計算
 		my $seq_cnt = scalar( @{$seq} );
-		my $wav_size = ($seq_cnt - 1) * int($self->{samples_per_sec} / $bps) + length($oneshot_ref);
+		my $interval = $self->{samples_per_sec} / $bps;
+		my @plot_tmpl = ();
+		for (my $i=0; $i<$seq_cnt; $i++) {
+			push @plot_tmpl, int($i * $interval);
+
+			# 発音タイミングをずらしてswingを実現
+			if ( $i & 0x01 ) {
+				$plot_tmpl[$i] += int( $interval * $swing );
+			}
+		}
+
+		# 必要な配列サイズを計算して初期化
+		my $wav_size = $plot_tmpl[$seq_cnt - 1] + length($oneshot_ref);
 		my @channel = map { 0.0; } 1..$wav_size;
 
 		for (my $i=0; $i<$seq_cnt; $i++) {
 			if ( $seq->[$i] ) {
-				my $offset = $i * int($self->{samples_per_sec} / $bps);
+				my $offset = $plot_tmpl[$i];
 				map { $channel[$offset++] += $_; } @{$oneshot_ref};
 			}
 		}
