@@ -19,11 +19,19 @@ our $VERSION = '0.01';
 
 Readonly my $FREQ_MIN => 0.001;
 
+# ノイズ
+Readonly my @noise => map { rand( 2.0 ) - 1.0; } 1..1024;
+
 sub _create_mod_func {
 	my $waveform = shift;
 
 	if ( $waveform eq 'sin' ) {
 		return sub { return sin( 2.0 * pi() * $_[0] ); };
+	}
+	elsif ( $waveform eq 'noise' ) {
+		return sub {
+			return ( $_[0] < 1.0 ? $noise[ $_[0] * scalar(@noise) ] : 0.0 );
+		};
 	}
 	elsif ( $waveform eq 'env' ) {
 		return sub { return ( 1.0 - $_[0] ); };
@@ -46,6 +54,7 @@ sub create_modulator {
 	}
 
 	if ( $waveform eq 'flat' or $waveform eq 'env' ) {
+		my $curve = ( exists $arg_ref->{curve} ) ? $arg_ref->{curve} : 1.0;
 		my $mod_func = _create_mod_func( $waveform );
 		my $t = 0.0;
 		my $interval = $samples_per_sec * $arg_ref->{sec};
@@ -54,7 +63,7 @@ sub create_modulator {
 			if ( $t < $interval ) {
 				my $ret = $mod_func->( $t / $interval );
 				$t += 1.0;
-				return $ret;
+				return $ret ** $curve;
 			}
 			else {
 				return 0.0;
