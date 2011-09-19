@@ -22,7 +22,7 @@ my @mod_ptn = (
 
 for (my $i=0; $i<scalar(@mod_ptn); $i++) {
 	$tone_snare->{osc}->{mod} = $mod_ptn[$i];
-	$synth->one_shot( $tone_snare );
+	$synth->oneshot( $tone_snare );
 	$synth->write( sprintf("snare_%d.wav", $i) );
 }
 
