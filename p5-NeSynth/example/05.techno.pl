@@ -11,7 +11,7 @@ my $kick = {
 	osc => {
 		freq => 30,
 		waveform => 'sin',
-		mod => { speed => 0.25, depth => 3.0, waveform => 'env' }
+		mod => { speed => 0.25, depth => 3.0, waveform => 'env', curve => 1.6 }
 	},
 	amp => { sec => 0.5, waveform => 'env', curve => 1.2 }
 };
