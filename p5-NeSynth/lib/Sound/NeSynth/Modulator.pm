@@ -98,9 +98,11 @@ sub create_osc {
 				sec => $sec,
 				waveform => $arg_ref->{mod}->{waveform}
 			};
+
 			if ( exists $arg_ref->{mod}->{curve} ) {
 				$mod_arg->{curve} = $arg_ref->{mod}->{curve};
 			}
+
 			$mod_func = create_modulator( $samples_per_sec, $mod_arg );
 			$mod_depth = $arg_ref->{mod}->{depth};
 			printf( "sec = %f, depth = %f\n", $sec, $mod_depth );
