@@ -111,9 +111,12 @@ sub create_osc {
 		return sub {
 			my $ret = $osc_func->( $t / $samples_per_cycle );
 
-			$t += ( 1.0 + ($mod_func->() * $mod_depth) );
-			while ( $samples_per_cycle <= $t ) {
-				$t -= $samples_per_cycle;
+			my $dt = ( 1.0 + ($mod_func->() * $mod_depth) );
+			if ( 0.0 < $dt ) {
+				$t += $dt;
+				while ( $samples_per_cycle <= $t ) {
+					$t -= $samples_per_cycle;
+				}
 			}
 
 			return $ret;
