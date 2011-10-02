@@ -60,7 +60,10 @@ sub save_as_wav {
 		die 'Unsupported format.';
 	}
 
-	my $size = scalar(@{$samples_ref}) * ($bits_per_sample / 8);
+	# ステレオの場合は2倍する
+	my $block_size = $bits_per_sample / 8;
+
+	my $size = scalar(@{$samples_ref}) * $block_size;
 	my $header =
 		  'RIFF' # chunkID
 		. pack('L', ($size + 32)) # chunkSize
@@ -72,7 +75,7 @@ sub save_as_wav {
 		. pack('S', 1) # channel
 		. pack('L', $samples_per_sec) # samplesPerSec
 		. pack('L', 1 * $samples_per_sec) # bytesPerSec = channel * samplesPerSec
-		. pack('S', 1) # blockSize
+		. pack('S', $block_size) # blockSize
 		. pack('S', $bits_per_sample); # bitsPerSample
 	my $data_chunk =
 		  'data' # chunkID
