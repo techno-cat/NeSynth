@@ -33,6 +33,24 @@ sub _create_mod_func {
 			return ( $_[0] < 1.0 ? $noise[ $_[0] * scalar(@noise) ] : 0.0 );
 		};
 	}
+	elsif ( $waveform eq 'pulse' ) {
+		return sub { return ( $_[0] < 0.5 ) ? -1.0 : 1.0; };
+	}
+	elsif ( $waveform eq 'saw' ) {
+		return sub { return ( 2.0 * $_[0] ) - 1.0; };
+	}
+	elsif ( $waveform eq 'tri' ) {
+		return sub {
+			if ( $_[0] < 0.5 ) {
+				# -1.0 -> +1.0
+				return -1.0 + ( 4.0 * $_[0] );
+			}
+			else {
+				# +1.0 -> -1.0
+				return 1.0 - ( 4.0 * ($_[0] - 0.5) );
+			}
+		};
+	}
 	elsif ( $waveform eq 'env' ) {
 		return sub { return ( 1.0 - $_[0] ); };
 	}
