@@ -74,7 +74,7 @@ sub save_as_wav {
 		. pack('S', 1) # waveFormatType
 		. pack('S', 1) # channel
 		. pack('L', $samples_per_sec) # samplesPerSec
-		. pack('L', 1 * $samples_per_sec) # bytesPerSec = channel * samplesPerSec
+		. pack('L', 1 * $samples_per_sec) # bytesPerSec = blockSize * samplesPerSec
 		. pack('S', $block_size) # blockSize
 		. pack('S', $bits_per_sample); # bitsPerSample
 	my $data_chunk =
