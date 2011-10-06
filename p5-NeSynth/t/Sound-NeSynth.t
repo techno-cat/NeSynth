@@ -15,10 +15,11 @@ BEGIN {
 };
 
 can_ok( 'Sound::NeSynth', 'new' );
-can_ok( 'Sound::NeSynth', qw(get_samples_per_sec) );
-can_ok( 'Sound::NeSynth', qw(get_samples_count) );
-can_ok( 'Sound::NeSynth', qw(test_tone) );
-can_ok( 'Sound::NeSynth', qw(write) );
+can_ok( 'Sound::NeSynth', 'note_to_freq' );
+can_ok( 'Sound::NeSynth', 'get_samples_per_sec' );
+can_ok( 'Sound::NeSynth', 'get_samples_count' );
+can_ok( 'Sound::NeSynth', 'test_tone' );
+can_ok( 'Sound::NeSynth', 'write' );
 can_ok( 'Sound::NeSynth', qw(oneshot render) );
 
 ok( Sound::NeSynth->new()->get_samples_per_sec() == 44100 );
@@ -29,12 +30,12 @@ ok( $synth->get_samples_count() == 0 );
 $synth->test_tone({ freq => 440, sec => 1 });
 ok( $synth->get_samples_count() == 44100 );
 
-ok( Sound::NeSynth::_note_to_freq('A2') == 220.0 );
-ok( Sound::NeSynth::_note_to_freq('A3') == 440.0 );
-ok( Sound::NeSynth::_note_to_freq('A4') == 880.0 );
+ok( note_to_freq('A2') == 220.0 );
+ok( note_to_freq('A3') == 440.0 );
+ok( note_to_freq('A4') == 880.0 );
 
-ok( Sound::NeSynth::_note_to_freq('A4') < Sound::NeSynth::_note_to_freq('A+4') );
-ok( Sound::NeSynth::_note_to_freq('A-4') < Sound::NeSynth::_note_to_freq('A4') );
-ok( Sound::NeSynth::_note_to_freq('E+4') == Sound::NeSynth::_note_to_freq('F4') );
+ok( note_to_freq('A4') < note_to_freq('A+4') );
+ok( note_to_freq('A-4') < note_to_freq('A4') );
+ok( note_to_freq('E+4') == note_to_freq('F4') );
 
 #########################

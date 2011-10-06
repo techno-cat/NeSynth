@@ -10,7 +10,9 @@ use base qw( Exporter );
 
 our %EXPORT_TAGS = ( 'all' => [ qw(
 ) ] );
-
+our @EXPORT = qw(
+	note_to_freq
+);
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our $VERSION = '0.01';
@@ -34,7 +36,7 @@ Readonly my %NOTE_TO_OFFSET => (
 Readonly my $FREQ_OF_A3 => 440.0;
 
 # アルファベットと+/-で表現した音程から周波数に変換する
-sub _note_to_freq {
+sub note_to_freq {
 	my $note = shift;
 
 	# MIDIだとオクターブは-2から+8まであるが、
@@ -204,7 +206,7 @@ sub test_tone {
 
 	# overwrite
 	if ( exists $arg_ref->{note} ) {
-		$freq = _note_to_freq( $arg_ref->{note} );
+		$freq = note_to_freq( $arg_ref->{note} );
 	}
 
 	$self->oneshot({
