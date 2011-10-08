@@ -43,16 +43,17 @@ my $c_hat = {
 	amp => { sec => 0.15, waveform => 'env', curve => 2.7 }
 };
 
+my $beats = [
+	{ seq => [ 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0 ], tone => $kick , vol => 1.00 },
+	{ seq => [ 0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0 ], tone => $snare, vol => 0.05 },
+	{ seq => [ 0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0 ], tone => $o_hat, vol => 0.020 },
+	{ seq => [ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 ], tone => $c_hat, vol => 0.012 }
+];
 
-my $synth = new Sound::NeSynth->new();
+my $synth = Sound::NeSynth->new();
 $synth->render({
 	bpm => 138, # beats per minute
-	beats => [
-		{ seq => [ 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0 ], tone => $kick , vol => 1.00 },
-		{ seq => [ 0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0 ], tone => $snare, vol => 0.05 },
-		{ seq => [ 0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0 ], tone => $o_hat, vol => 0.020 },
-		{ seq => [ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 ], tone => $c_hat, vol => 0.012 }
-	]
+	beats => $beats
 });
 
 $synth->write( "techno.wav" );

@@ -7,7 +7,7 @@ BEGIN {
 
 use Sound::NeSynth;
 
-my $synth = new Sound::NeSynth->new();
+my $synth = Sound::NeSynth->new();
 
 my $tone_snare = {
 	osc => { freq => 400, waveform => 'sin' },
