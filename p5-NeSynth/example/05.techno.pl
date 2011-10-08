@@ -9,36 +9,36 @@ use Sound::NeSynth;
 
 my $kick = {
 	osc => {
-		freq => 30,
+		freq => 20,
 		waveform => 'sin',
-		mod => { speed => 0.25, depth => 3.0, waveform => 'env', curve => 1.6 }
+		mod => { speed => 0.35, depth => 3.5, waveform => 'env', curve => 1.6 }
 	},
-	amp => { sec => 0.5, waveform => 'env', curve => 1.2 }
+	amp => { sec => 0.25, waveform => 'env', curve => 1.4 }
 };
 
 my $snare = {
 	osc => {
 		freq => 400,
-		waveform => 'sin',
-		mod => { speed => 0.10, depth => 8.0, waveform => 'noise' }
+		waveform => 'tri',
+		mod => { speed => 0.10, depth => 9.0, waveform => 'noise' }
 	},
-	amp => { sec => 0.2, waveform => 'env', curve => 2.7 }
+	amp => { sec => 0.18, waveform => 'env', curve => 2.2 }
 };
 
 my $o_hat = {
 	osc => {
-		freq => 8000,
-		waveform => 'sin',
-		mod => { speed => 0.06, depth =>  2.0, waveform => 'noise' }
+		freq => 16000,
+		waveform => 'tri',
+		mod => { speed => 0.06, depth =>  6.0, waveform => 'noise' }
 	},
 	amp => { sec => 0.2, waveform => 'env', curve => 2.7 }
 };
 
 my $c_hat = {
 	osc => {
-		freq => 8000,
-		waveform => 'sin',
-		mod => { speed => 0.06, depth =>  2.0, waveform => 'noise' }
+		freq => 16000,
+		waveform => 'tri',
+		mod => { speed => 0.06, depth =>  6.0, waveform => 'noise' }
 	},
 	amp => { sec => 0.15, waveform => 'env', curve => 2.7 }
 };
@@ -55,9 +55,9 @@ $synth->render({
 	bpm => 138, # beats per minute
 	beats => [
 		{ seq => $patterns{kick},  tone => $kick,  vol => 1.00 },
-		{ seq => $patterns{snare}, tone => $snare, vol => 0.04 },
-		{ seq => $patterns{o_hat}, tone => $o_hat, vol => 0.02 },
-		{ seq => $patterns{c_hat}, tone => $c_hat, vol => 0.01 }
+		{ seq => $patterns{snare}, tone => $snare, vol => 0.12 },
+		{ seq => $patterns{o_hat}, tone => $o_hat, vol => 0.06 },
+		{ seq => $patterns{c_hat}, tone => $c_hat, vol => 0.015 }
 	]
 });
 
