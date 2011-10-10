@@ -43,11 +43,23 @@ my $c_hat = {
 	amp => { sec => 0.15, waveform => 'env', curve => 2.7 }
 };
 
+my $bass_hi = {
+	osc => { freq => note_to_freq('D2'), waveform => 'pulse' },
+	amp => { sec => 0.12, waveform => 'env', curve => 2.0 }
+};
+
+my $bass_lo = {
+	osc => { freq => note_to_freq('D1'), waveform => 'pulse' },
+	amp => { sec => 0.15, waveform => 'env', curve => 2.0 }
+};
+
 my %patterns = (
-	kick  => [ 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0, 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0 ],
-	snare => [ 0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0, 0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0 ],
-	o_hat => [ 0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0, 0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0 ],
-	c_hat => [ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 ]
+	kick  =>   [ 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0, 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0 ],
+	snare =>   [ 0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0, 0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0 ],
+	o_hat =>   [ 0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0, 0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0 ],
+	c_hat =>   [ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 ],
+	bass_hi => [ 0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1, 0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1 ],
+	bass_lo => [ 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0, 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0 ]
 );
 
 my $synth = Sound::NeSynth->new();
@@ -57,10 +69,12 @@ $synth->render({
 		{ seq => $patterns{kick},  tone => $kick,  vol => 1.00 },
 		{ seq => $patterns{snare}, tone => $snare, vol => 0.12 },
 		{ seq => $patterns{o_hat}, tone => $o_hat, vol => 0.06 },
-		{ seq => $patterns{c_hat}, tone => $c_hat, vol => 0.015 }
+		{ seq => $patterns{c_hat}, tone => $c_hat, vol => 0.015 },
+		{ seq => $patterns{bass_hi}, tone => $bass_hi, vol => 0.05 },
+		{ seq => $patterns{bass_lo}, tone => $bass_lo, vol => 0.05 }
 	]
 });
 
-$synth->write( "techno.wav" );
+$synth->write( "techno2.wav" );
 
 __END__
