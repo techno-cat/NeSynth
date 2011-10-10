@@ -20,6 +20,7 @@ our $VERSION = '0.01';
 Readonly my $FREQ_MIN => 0.001;
 
 # ノイズ
+srand( 2 ); # ノイズっぽい結果が得られるように固定
 Readonly my @noise => map { rand( 2.0 ) - 1.0; } 1..1024;
 
 sub _create_mod_func {
