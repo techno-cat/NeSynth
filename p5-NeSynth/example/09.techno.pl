@@ -44,13 +44,13 @@ my $c_hat = {
 };
 
 my $bass_hi = {
-	osc => { freq => note_to_freq('D2'), waveform => 'pulse' },
-	amp => { sec => 0.12, waveform => 'env', curve => 2.0 }
+	osc => { freq => note_to_freq('D2'), waveform => 'tri' },
+	amp => { sec => 0.12, attack => 0.001, waveform => 'env', curve => 1.0 }
 };
 
 my $bass_lo = {
-	osc => { freq => note_to_freq('D1'), waveform => 'pulse' },
-	amp => { sec => 0.15, waveform => 'env', curve => 2.0 }
+	osc => { freq => note_to_freq('D1'), waveform => 'tri' },
+	amp => { sec => 0.15, attack => 0.001, waveform => 'env', curve => 1.0 }
 };
 
 my %patterns = (
@@ -70,8 +70,8 @@ $synth->render({
 		{ seq => $patterns{snare}, tone => $snare, vol => 0.12 },
 		{ seq => $patterns{o_hat}, tone => $o_hat, vol => 0.06 },
 		{ seq => $patterns{c_hat}, tone => $c_hat, vol => 0.015 },
-		{ seq => $patterns{bass_hi}, tone => $bass_hi, vol => 0.05 },
-		{ seq => $patterns{bass_lo}, tone => $bass_lo, vol => 0.05 }
+		{ seq => $patterns{bass_hi}, tone => $bass_hi, vol => 0.25 },
+		{ seq => $patterns{bass_lo}, tone => $bass_lo, vol => 0.25 }
 	]
 });
 

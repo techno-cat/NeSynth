@@ -30,7 +30,7 @@ sub write_sample {
 	foreach my $note ( keys %matrix ) {
 		my $bass = {
 			osc => { freq => note_to_freq($note), waveform => $waveform },
-			amp => { sec => 0.3, waveform => 'env', curve => 1.0 }
+			amp => { sec => 0.25, attack => 0.002, waveform => 'env', curve => 1.0 }
 		};
 		push @beats, { seq => $matrix{$note}, tone => $bass, vol => $vol };
 	}
