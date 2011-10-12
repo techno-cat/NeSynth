@@ -79,24 +79,22 @@ sub _create_oneshot {
 		die '"amp" not found in arguments.'
 	}
 
-	# sec廃止までの暫定処理
-	my $amp = $arg_ref->{amp};
-	my $ar = {
-		attack => ( exists $amp->{attack} ) ? $amp->{attack} : 0.0,
-		release => ( exists $amp->{release} ) ? $amp->{release} : 0.0
-	};
-	$ar->{release} = $amp->{sec} - $ar->{attack};
-
 	my $osc = create_modulator( $samples_per_sec, $arg_ref->{osc} );
 	my $env = create_modulator( $samples_per_sec, $arg_ref->{amp} );
-	
-	my @samples = ();
-	my $attack = int($samples_per_sec * $ar->{attack});
-	my $release = int($samples_per_sec * $ar->{release});
 
+	my $amp = $arg_ref->{amp};
+	my $attack = 0;
+	if ( exists $amp->{attack} ) {
+		$attack = int( $samples_per_sec * $amp->{attack} );
+	}
+	my $release = int( $samples_per_sec * $amp->{sec} ) - $attack;
+
+	my @samples = ();
 	if ( 0 < $attack ) {
 		push @samples, map {
-			$osc->() * ( ($_ / $attack) ** 2.0 );
+			# 立ち上がりでプチッって言わないようにするための回避策なので、
+			# アタック感重視の係数が入れてある
+			$osc->() * $env->() * ( ($_ / $attack) ** 2.0 );
 		} 0..($attack - 1);
 	}
 
