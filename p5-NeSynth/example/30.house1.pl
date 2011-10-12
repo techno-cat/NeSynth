@@ -64,7 +64,7 @@ $synth->render({
 	swing => 1/3
 });
 
-$synth->write( "house.wav" );
+$synth->write( "house1.wav" );
 
 __END__
 
