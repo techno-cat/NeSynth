@@ -180,7 +180,7 @@ sub render {
 		}
 
 		# 必要な配列サイズを計算して初期化
-		my $wav_size = $plot_tmpl[$seq_cnt - 1] + length($oneshot_ref);
+		my $wav_size = $plot_tmpl[$seq_cnt - 1] + scalar(@{$oneshot_ref});
 		my @channel = map { 0.0; } 1..$wav_size;
 
 		for (my $i=0; $i<$seq_cnt; $i++) {
