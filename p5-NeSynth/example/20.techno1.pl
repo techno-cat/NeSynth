@@ -31,7 +31,7 @@ my $o_hat = {
 		waveform => 'tri',
 		mod => { speed => 0.06, depth =>  6.0, waveform => 'noise' }
 	},
-	amp => { sec => 0.2, waveform => 'env', curve => 2.7 }
+	amp => { sec => 0.15, waveform => 'env', curve => 2.7 }
 };
 
 my $c_hat = {
@@ -40,7 +40,7 @@ my $c_hat = {
 		waveform => 'tri',
 		mod => { speed => 0.06, depth =>  6.0, waveform => 'noise' }
 	},
-	amp => { sec => 0.15, waveform => 'env', curve => 2.7 }
+	amp => { sec => 0.08, waveform => 'env', curve => 2.7 }
 };
 
 my %patterns = (
