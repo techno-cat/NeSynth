@@ -9,11 +9,11 @@ use Sound::NeSynth;
 
 my $kick = {
 	osc => {
-		freq => 20,
+		freq => 28,
 		waveform => 'sin',
-		mod => { speed => 0.30, depth => 3.5, waveform => 'env', curve => 1.8 }
+		mod => { speed => 0.16, depth => 3.5, waveform => 'env', curve => 1.6 }
 	},
-	amp => { sec => 0.22, waveform => 'env', curve => 1.6 }
+	amp => { sec => 0.22, waveform => 'env', curve => 1.4 }
 };
 
 my $snare = {

@@ -9,9 +9,9 @@ use Sound::NeSynth;
 
 my $kick = {
 	osc => {
-		freq => 20,
+		freq => 25,
 		waveform => 'sin',
-		mod => { speed => 0.35, depth => 3.5, waveform => 'env', curve => 1.6 }
+		mod => { speed => 0.25, depth => 3.5, waveform => 'env', curve => 1.8 }
 	},
 	amp => { sec => 0.25, waveform => 'env', curve => 1.4 }
 };

@@ -9,9 +9,9 @@ use Sound::NeSynth;
 
 my $kick = {
 	osc => {
-		freq => 20,
+		freq => 25,
 		waveform => 'sin',
-		mod => { speed => 0.35, depth => 3.5, waveform => 'env', curve => 1.6 }
+		mod => { speed => 0.25, depth => 3.5, waveform => 'env', curve => 1.8 }
 	},
 	amp => { sec => 0.25, waveform => 'env', curve => 1.4 }
 };
@@ -43,23 +43,21 @@ my $c_hat = {
 	amp => { sec => 0.15, waveform => 'env', curve => 2.7 }
 };
 
-my $bass_hi = {
-	osc => { freq => note_to_freq('D2'), waveform => 'tri' },
-	amp => { sec => 0.12, attack => 0.001, waveform => 'env', curve => 1.0 }
-};
-
-my $bass_lo = {
-	osc => { freq => note_to_freq('D1'), waveform => 'tri' },
-	amp => { sec => 0.15, attack => 0.001, waveform => 'env', curve => 1.0 }
-};
+sub my_bass {
+	my ($note, $sec) = @_;
+	return {
+		osc => { freq => note_to_freq($note), waveform => 'tri' },
+		amp => { sec => $sec, attack => 0.01, waveform => 'env', curve => 1.0 }
+	};
+}
 
 my %patterns = (
 	kick  =>   [ 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0, 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0 ],
 	snare =>   [ 0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0, 0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0 ],
 	o_hat =>   [ 0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0, 0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0 ],
 	c_hat =>   [ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 ],
-	bass_hi => [ 0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1, 0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1 ],
-	bass_lo => [ 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0, 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0 ]
+	bass_D2 => [ 0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1, 0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1 ],
+	bass_D1 => [ 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0, 1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0 ]
 );
 
 my $synth = Sound::NeSynth->new();
@@ -70,8 +68,8 @@ $synth->render({
 		{ seq => $patterns{snare}, tone => $snare, vol => 0.12 },
 		{ seq => $patterns{o_hat}, tone => $o_hat, vol => 0.06 },
 		{ seq => $patterns{c_hat}, tone => $c_hat, vol => 0.015 },
-		{ seq => $patterns{bass_hi}, tone => $bass_hi, vol => 0.25 },
-		{ seq => $patterns{bass_lo}, tone => $bass_lo, vol => 0.25 }
+		{ seq => $patterns{bass_D2}, tone => my_bass('D2', 0.08), vol => 0.25 },
+		{ seq => $patterns{bass_D1}, tone => my_bass('D1', 0.12), vol => 0.25 }
 	]
 });
 
