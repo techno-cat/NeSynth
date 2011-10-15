@@ -7,7 +7,7 @@ BEGIN {
 
 use Sound::NeSynth;
 
-my $synth = new Sound::NeSynth->new();
+my $synth = Sound::NeSynth->new();
 $synth->test_tone({ freq => 440, sec => 1 });
 $synth->write( 'test.wav' );
 
