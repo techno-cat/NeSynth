@@ -245,11 +245,70 @@ Sound::NeSynth - Perl extension for Synthsis
 =head1 SYNOPSIS
 
   use Sound::NeSynth;
-  
-  # 440Hz, 1sec => test.wav
   my $synth = Sound::NeSynth->new();
+
+  #
+  # 440Hz, 1sec => test.wav
+  #
   $synth->test_tone({ freq => 440, sec => 1 });
   $synth->write( 'test.wav' );
+
+  #
+  # note -> frequency
+  #
+  my $freq = 440.0;
+
+  # note = A3
+  $freq = note_to_freq( 'A3' ); # 440.0
+
+  # note = C3#
+  $freq = note_to_freq( 'C3+' );
+
+  # note = C3b
+  $freq = note_to_freq( 'C3-' );
+
+  #
+  # get samples per second
+  #
+  my $samples_per_sec = $synth->get_samples_per_sec(); # 44100
+
+  #
+  # get samples count
+  #
+  my $cnt = $synth->get_samples_count(); # = length(sec) * $samples_per_sec
+
+  #
+  # tone
+  #
+  my $tone = {
+    osc => {
+      freq => 220,         # frequency
+      waveform => 'sin',   # waveform ( sin, tri, pulse, saw, noise )
+      mod => {
+	    speed => 0.25,     # modulation frequency = frequency * speed
+		depth => 3.5,      # modulation depth
+		waveform => 'env', # modulation waveform ( sin, tri, pulse, saw, noise, env ) 
+		curve => 1.8       # envelope curve (option)
+	  }
+    },
+    amp => {
+	  sec => 1.0,          # gate time
+	  waveform => 'env',   # only support 'env'
+	  curve => 1.4,        # envelope curve (option)
+	  attack => 0.01       # attack time (option)
+	}
+  };
+
+  #
+  # one shot
+  #
+  $synth->oneshot( $tone );
+  $synth->write( 'this_tone.wav' );
+
+  #
+  # beats
+  # please see ./example
+  #
 
 =head1 DESCRIPTION
 
