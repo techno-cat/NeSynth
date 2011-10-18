@@ -285,18 +285,18 @@ Sound::NeSynth - Perl extension for Synthsis
       freq => 220,         # frequency
       waveform => 'sin',   # waveform ( sin, tri, pulse, saw, noise )
       mod => {
-	    speed => 0.25,     # modulation frequency = frequency * speed
-		depth => 3.5,      # modulation depth
-		waveform => 'env', # modulation waveform ( sin, tri, pulse, saw, noise, env ) 
-		curve => 1.8       # envelope curve (option)
-	  }
+        speed => 0.25,     # modulation frequency = frequency * speed
+        depth => 3.5,      # modulation depth
+        waveform => 'env', # modulation waveform ( sin, tri, pulse, saw, noise, env ) 
+        curve => 1.8       # envelope curve (option)
+      }
     },
     amp => {
-	  sec => 1.0,          # gate time
-	  waveform => 'env',   # only support 'env'
-	  curve => 1.4,        # envelope curve (option)
-	  attack => 0.01       # attack time (option)
-	}
+      sec => 1.0,          # gate time
+      waveform => 'env',   # only support 'env'
+      curve => 1.4,        # envelope curve (option)
+      attack => 0.01       # attack time (option)
+    }
   };
 
   #
