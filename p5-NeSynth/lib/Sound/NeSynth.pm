@@ -309,6 +309,14 @@ Sound::NeSynth - Perl extension for Synthsis
   # beats
   # please see ./example
   #
+  $synth->render({
+    bpm => 120, # beats per minute
+    beats => [
+      { seq=> [ 1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0 ], tone => $tone, vol => 1.0 }
+    ],
+    swing => 0.0 # recommend: 0.0 - 0.33
+  });
+  $synth->write( 'beats.wav' );
 
 =head1 DESCRIPTION
 
