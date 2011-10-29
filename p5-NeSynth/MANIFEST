@@ -6,4 +6,5 @@ t/Sound-NeSynth.t
 t/Sound-WaveFile.t
 lib/Sound/NeSynth.pm
 lib/Sound/NeSynth/Modulator.pm
+lib/Sound/NeSynth/Filter.pm
 lib/Sound/WaveFile.pm
