@@ -87,22 +87,18 @@ sub _create_oneshot {
 	if ( exists $amp->{attack} ) {
 		$attack = int( $samples_per_sec * $amp->{attack} );
 	}
-	my $release = int( $samples_per_sec * $amp->{sec} ) - $attack;
+	my $gate_time = int( $samples_per_sec * $amp->{sec} );
 
-	my @samples = ();
-	if ( 0 < $attack ) {
-		push @samples, map {
+	my @samples = map {
+		if ( $_ < $attack ) {
 			# 立ち上がりでプチッって言わないようにするための回避策なので、
 			# アタック感重視の係数が入れてある
 			$osc->() * $env->() * ( ($_ / $attack) ** 2.0 );
-		} 0..($attack - 1);
-	}
-
-	if ( 0 < $release ) {
-		push @samples, map {
+		}
+		else {
 			$osc->() * $env->();
-		} 0..($release - 1);
-	}
+		}
+	} 0..($gate_time - 1);
 
 	return \@samples;
 }
