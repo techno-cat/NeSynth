@@ -89,15 +89,21 @@ sub _create_oneshot {
 	}
 	my $gate_time = int( $samples_per_sec * $amp->{sec} );
 
+	# todo: filterの生成と暖機運転
+
 	my @samples = map {
+		my $val = 0.0;
 		if ( $_ < $attack ) {
 			# 立ち上がりでプチッって言わないようにするための回避策なので、
 			# アタック感重視の係数が入れてある
-			$osc->() * $env->() * ( ($_ / $attack) ** 2.0 );
+			$val = $osc->() * $env->() * ( ($_ / $attack) ** 2.0 );
 		}
 		else {
-			$osc->() * $env->();
+			$val = $osc->() * $env->();
 		}
+
+		# todo: filterを掛けた結果を返す
+		$val; 
 	} 0..($gate_time - 1);
 
 	return \@samples;
