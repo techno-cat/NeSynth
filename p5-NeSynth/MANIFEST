@@ -4,6 +4,8 @@ MANIFEST
 README
 t/Sound-NeSynth.t
 t/Sound-WaveFile.t
+t/Sound-NeSynth-Modulator.t
+t/Sound-NeSynth-Filter.t
 lib/Sound/NeSynth.pm
 lib/Sound/NeSynth/Modulator.pm
 lib/Sound/NeSynth/Filter.pm
