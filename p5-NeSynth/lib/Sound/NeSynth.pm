@@ -6,6 +6,7 @@ use warnings;
 use Readonly;
 use Sound::WaveFile;
 use Sound::NeSynth::Modulator;
+use Sound::NeSynth::Filter;
 use base qw( Exporter );
 
 our %EXPORT_TAGS = ( 'all' => [ qw(
@@ -83,27 +84,26 @@ sub _create_oneshot {
 	my $env = create_modulator( $samples_per_sec, $arg_ref->{amp} );
 
 	my $amp = $arg_ref->{amp};
-	my $attack = 0;
-	if ( exists $amp->{attack} ) {
-		$attack = int( $samples_per_sec * $amp->{attack} );
-	}
+	my $attack = ( exists $amp->{attack} ) ? $amp->{attack} : 0;
+
+	my $attack_time = int( $samples_per_sec * $attack );
 	my $gate_time = int( $samples_per_sec * $amp->{sec} );
 
-	# todo: filterの生成と暖機運転
+	my $filter = sub { return shift; };
+	if ( exists $arg_ref->{filter} ) {
+		$filter = create_filter( $samples_per_sec, $arg_ref->{filter} );
+
+		# todo: IIRフィルタなので、遅延器の初期化を行う
+		# ループ数は経験則なので適当
+		#	foreach ( 0..30 ) { $filter->( $osc->() ); }
+	}
 
 	my @samples = map {
-		my $val = 0.0;
-		if ( $_ < $attack ) {
-			# 立ち上がりでプチッって言わないようにするための回避策なので、
-			# アタック感重視の係数が入れてある
-			$val = $osc->() * $env->() * ( ($_ / $attack) ** 2.0 );
-		}
-		else {
-			$val = $osc->() * $env->();
-		}
+		# 立ち上がりでプチッって言わないようにするための回避策なので、
+		# アタック感重視の係数が入れてある
+		my $volume = ( $_ < $attack ) ? (($_ / $attack) ** 2.0) : 1.0;
 
-		# todo: filterを掛けた結果を返す
-		$val; 
+		$filter->( $osc->() ) * $env->() * $volume;
 	} 0..($gate_time - 1);
 
 	return \@samples;
