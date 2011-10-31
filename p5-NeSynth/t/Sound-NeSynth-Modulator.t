@@ -23,11 +23,12 @@ ok( abs($osc->() - ( 0.0)) < 0.01 ); # sin( 2*pi * 2/4 );
 ok( abs($osc->() - (-1.0)) < 0.01 ); # sin( 2*pi * 3/4 );
 
 # frequency = 0.0Hz
-my $no_osc = create_modulator( 4, { waveform => 'sin', freq => 0 } );
-is( $no_osc->(), 0.0 );
+dies_ok {
+	create_modulator( 4, { waveform => 'sin', freq => 0 } );
+};
 
 # frequency = -1.0Hz
-dies_ok{
+dies_ok {
 	create_modulator( 4, { waveform => 'sin', freq => -1 } )
 };
 

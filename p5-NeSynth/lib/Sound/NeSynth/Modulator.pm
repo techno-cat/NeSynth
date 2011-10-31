@@ -104,8 +104,7 @@ sub create_osc {
 	}
 
 	if ( $freq < $FREQ_MIN ) {
-		warn $freq . ' is too small, so changed to 0.';
-		return sub { return 0.0; };
+		die $freq . ' is too small, frequency must be or more ' . $FREQ_MIN;
 	}
 	else {
 		my $mod_func = sub { return 1.0; };
