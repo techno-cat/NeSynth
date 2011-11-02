@@ -68,6 +68,31 @@ sub note_to_freq {
 	}
 }
 
+sub _create_osc_unit {
+	my $samples_per_sec = shift;
+	my $arg_ref = shift;
+	return create_modulator( $samples_per_sec, $arg_ref );
+}
+
+sub _create_pitch_modulator {
+	my $samples_per_sec = shift;
+	my $arg_ref = shift;
+
+	my $waveform = $arg_ref->{waveform};
+	my $depth = $arg_ref->{depth};
+	if ( $waveform eq 'env' ) {
+		my $curve = ( exists $arg_ref->{curve} ) ? $arg_ref->{curve} : 1.0;
+		my $env = create_envelope(
+			$samples_per_sec, { sec => $arg_ref->{speed}, curve => $curve } );
+		return sub { $env->() * $depth };
+	}
+	else {
+		my $osc = create_modulator(
+			$samples_per_sec, { freq => (1.0 / $arg_ref->{speed}), waveform => $waveform } );
+		return sub { $osc->(0) * $depth };
+	}
+}
+
 sub _create_oneshot {
 	my $samples_per_sec = shift;
 	my $arg_ref = shift;
@@ -81,7 +106,12 @@ sub _create_oneshot {
 	}
 
 	my $osc = create_modulator( $samples_per_sec, $arg_ref->{osc} );
-	my $env = create_modulator( $samples_per_sec, $arg_ref->{amp} );
+	my $env = create_envelope( $samples_per_sec, $arg_ref->{amp} );
+
+	my $mod = sub { return 0.0; }; # pitch modulator
+	if ( exists $arg_ref->{osc}->{mod} ) {
+		$mod = _create_pitch_modulator( $samples_per_sec, $arg_ref->{osc}->{mod} );
+	}
 
 	my $filter = sub { return shift; };
 	if ( exists $arg_ref->{filter} ) {
@@ -93,15 +123,15 @@ sub _create_oneshot {
 	}
 
 	my $amp = $arg_ref->{amp};
-	my $attack = ( exists $amp->{attack} ) ? $amp->{attack} : 0;
 	my $gate_time = int( $samples_per_sec * $amp->{sec} );
 
 	my @samples = map {
-		$filter->( $osc->() ) * $env->();
+		$filter->( $osc->( $mod->() ) ) * $env->();
 	} 0..($gate_time - 1);
 
 	# 立ち上がりでプチッって言わないようにするための回避策
 	# なので、アタック感重視の係数をしている
+	my $attack = ( exists $amp->{attack} ) ? $amp->{attack} : 0.0;
 	if ( 0.0 < $attack ) {
 		my $attack_time = int( $samples_per_sec * $attack );
 		if ( $gate_time < $attack_time ) { $attack_time = $gate_time; }
@@ -238,7 +268,7 @@ sub test_tone {
 
 	$self->oneshot({
 		osc => { freq => $freq, waveform => 'sin' },
-		amp => { sec => $sec, waveform => 'flat' }
+		amp => { sec => $sec, curve => 0.0 }
 	});
 }
 
@@ -300,7 +330,6 @@ Sound::NeSynth - Perl extension for Synthsis
     },
     amp => {
       sec => 1.0,          # gate time
-      waveform => 'env',   # only support 'env'
       curve => 1.4,        # envelope curve (option)
       attack => 0.01       # attack time (option)
     }

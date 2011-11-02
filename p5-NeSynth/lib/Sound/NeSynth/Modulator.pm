@@ -10,7 +10,7 @@ use base qw( Exporter );
 our %EXPORT_TAGS = ( 'all' => [ qw(
 ) ] );
 our @EXPORT = qw(
-	create_modulator
+	create_modulator create_envelope
 );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
@@ -52,49 +52,12 @@ sub _create_mod_func {
 			}
 		};
 	}
-	elsif ( $waveform eq 'env' ) {
-		return sub { return ( 1.0 - $_[0] ); };
-	}
-	else { # ( $wavform eq 'flat' ) {
-		return sub { return 1.0; };
+	else {
+		die 'cannot create mod func. ("waveform" is wrong)';
 	}
 }
 
 sub create_modulator {
-	my $samples_per_sec = shift;
-	my $arg_ref = shift;
-
-	my $waveform = 'flat';
-	if ( not exists $arg_ref->{waveform} ) {
-		warn '"waveform" is required argument.'
-	}
-	else {
-		$waveform = $arg_ref->{waveform};
-	}
-
-	if ( $waveform eq 'flat' or $waveform eq 'env' ) {
-		my $curve = ( exists $arg_ref->{curve} ) ? $arg_ref->{curve} : 1.0;
-		my $mod_func = _create_mod_func( $waveform );
-		my $t = 0.0;
-		my $interval = $samples_per_sec * $arg_ref->{sec};
-		printf( "%s, t = %s, interval = %s\n", $waveform, $t, $interval );
-		return sub {
-			if ( $t < $interval ) {
-				my $ret = $mod_func->( $t / $interval );
-				$t += 1.0;
-				return $ret ** $curve;
-			}
-			else {
-				return 0.0;
-			}
-		}
-	}
-	else {
-		return create_osc( $samples_per_sec, $arg_ref );
-	}
-}
-
-sub create_osc {
 	my $samples_per_sec = shift;
 	my $arg_ref = shift;
 
@@ -106,43 +69,44 @@ sub create_osc {
 	if ( $freq < $FREQ_MIN ) {
 		die $freq . ' is too small, frequency must be or more ' . $FREQ_MIN;
 	}
-	else {
-		my $mod_func = sub { return 1.0; };
-		my $mod_depth = 0.0;
-		if ( exists $arg_ref->{mod} ) {
-			my $sec = $arg_ref->{mod}->{speed};
-			my $mod_arg = {
-				freq => ( 1.0 / $sec ),
-				sec => $sec,
-				waveform => $arg_ref->{mod}->{waveform}
-			};
 
-			if ( exists $arg_ref->{mod}->{curve} ) {
-				$mod_arg->{curve} = $arg_ref->{mod}->{curve};
+	my $osc_func = _create_mod_func( $arg_ref->{waveform} );
+	my $t = 0.0;
+	my $samples_per_cycle = $samples_per_sec / $freq;
+	return sub {
+		my $mod = shift;
+		my $ret = $osc_func->( $t / $samples_per_cycle );
+
+		my $dt = 1.0 + $mod;
+		if ( 0.0 < $dt ) {
+			$t += $dt;
+			while ( $samples_per_cycle <= $t ) {
+				$t -= $samples_per_cycle;
 			}
-
-			$mod_func = create_modulator( $samples_per_sec, $mod_arg );
-			$mod_depth = $arg_ref->{mod}->{depth};
-			printf( "sec = %f, depth = %f\n", $sec, $mod_depth );
 		}
 
-		my $osc_func = _create_mod_func( $arg_ref->{waveform} );
-		my $t = 0.0;
-		my $samples_per_cycle = $samples_per_sec / $freq;
-		return sub {
-			my $ret = $osc_func->( $t / $samples_per_cycle );
+		return $ret;
+	};
+}
 
-			my $dt = ( 1.0 + ($mod_func->() * $mod_depth) );
-			if ( 0.0 < $dt ) {
-				$t += $dt;
-				while ( $samples_per_cycle <= $t ) {
-					$t -= $samples_per_cycle;
-				}
-			}
+sub create_envelope {
+	my $samples_per_sec = shift;
+	my $arg_ref = shift;
 
-			return $ret;
-		};
-	}
+	my $curve = ( exists $arg_ref->{curve} ) ? $arg_ref->{curve} : 1.0;
+	my $mod_func = sub { return ( 1.0 - $_[0] ); };
+	my $t = 0.0;
+	my $interval = $samples_per_sec * $arg_ref->{sec};
+	return sub {
+		if ( $t < $interval ) {
+			my $ret = $mod_func->( $t / $interval );
+			$t += 1.0;
+			return $ret ** $curve;
+		}
+		else {
+			return 0.0;
+		}
+	};
 }
 
 1;
@@ -158,14 +122,15 @@ Sound::NeSynth:Modulator - Modulator module for NeSynth
   
   my $samples_per_sec = 4;
   my $freq = 1;
-  my $osc = create_osc( $samples_per_sec, $freq );
+  my $osc = create_modulator( $samples_per_sec, { freq => $freq, waveform => 'sin'} );
 
-  $osc->(); #  0.0
-  $osc->(); #  1.0
-  $osc->(); #  0.0
-  $osc->(); # -1.0
-  $osc->(); #  0.0
-  $osc->(); #  1.0
+  # argument is modulation parameter.
+  $osc->( 0 ); #  0.0
+  $osc->( 0 ); #  1.0
+  $osc->( 0 ); #  0.0
+  $osc->( 0 ); # -1.0
+  $osc->( 0 ); #  0.0
+  $osc->( 0 ); #  1.0
   # -- repeat --
 
 =head1 DESCRIPTION
