@@ -104,7 +104,7 @@ sub _create_oneshot {
 	# なので、アタック感重視の係数をしている
 	if ( 0.0 < $attack ) {
 		my $attack_time = int( $samples_per_sec * $attack );
-		if ( $attack_time < $gate_time ) { $attack_time = $gate_time; }
+		if ( $gate_time < $attack_time ) { $attack_time = $gate_time; }
 		for (my $i=0; $i<$attack_time; $i++) {
 			my $volume = ( ($i / $attack_time) ** 2.0 );
 			$samples[$i] *= $volume;
