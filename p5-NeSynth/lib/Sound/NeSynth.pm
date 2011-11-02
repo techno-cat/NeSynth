@@ -83,12 +83,6 @@ sub _create_oneshot {
 	my $osc = create_modulator( $samples_per_sec, $arg_ref->{osc} );
 	my $env = create_modulator( $samples_per_sec, $arg_ref->{amp} );
 
-	my $amp = $arg_ref->{amp};
-	my $attack = ( exists $amp->{attack} ) ? $amp->{attack} : 0;
-
-	my $attack_time = int( $samples_per_sec * $attack );
-	my $gate_time = int( $samples_per_sec * $amp->{sec} );
-
 	my $filter = sub { return shift; };
 	if ( exists $arg_ref->{filter} ) {
 		$filter = create_filter( $samples_per_sec, $arg_ref->{filter} );
@@ -98,13 +92,23 @@ sub _create_oneshot {
 		#	foreach ( 0..30 ) { $filter->( $osc->() ); }
 	}
 
-	my @samples = map {
-		# 立ち上がりでプチッって言わないようにするための回避策なので、
-		# アタック感重視の係数が入れてある
-		my $volume = ( $_ < $attack ) ? (($_ / $attack) ** 2.0) : 1.0;
+	my $amp = $arg_ref->{amp};
+	my $attack = ( exists $amp->{attack} ) ? $amp->{attack} : 0;
+	my $gate_time = int( $samples_per_sec * $amp->{sec} );
 
-		$filter->( $osc->() ) * $env->() * $volume;
+	my @samples = map {
+		$filter->( $osc->() ) * $env->();
 	} 0..($gate_time - 1);
+
+	# 立ち上がりでプチッって言わないようにするための回避策
+	# なので、アタック感重視の係数をしている
+	if ( 0.0 < $attack ) {
+		my $attack_time = int( $samples_per_sec * $attack );
+		for (my $i=0; $i<$attack_time; $i++) {
+			my $volume = ( ($i / $attack_time) ** 2.0 );
+			$samples[$i] *= $volume;
+		}
+	}
 
 	return \@samples;
 }
