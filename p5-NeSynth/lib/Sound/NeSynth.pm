@@ -119,7 +119,7 @@ sub _create_oneshot {
 
 		# todo: IIRフィルタなので、遅延器の初期化を行う
 		# ループ数は経験則なので適当
-		#	foreach ( 0..30 ) { $filter->( $osc->() ); }
+		foreach ( 0..30 ) { $filter->( $osc->(0) ); }
 	}
 
 	my $amp = $arg_ref->{amp};
