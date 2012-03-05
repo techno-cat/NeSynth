@@ -195,6 +195,8 @@ sub render {
 	my $beats = $arg_ref->{beats};
 	my $swing = ( exists $arg_ref->{swing} ) ? $arg_ref->{swing} : 0.0;
 
+	# 各チャンネルのシーケンスの長さが異なる場合を考慮しているので、
+	# すべてのチャンネルで発音タイミングの計算を行っている
 	my @channels = ();
 	foreach my $beat ( @{$beats} ) {
 		my $seq = $beat->{seq};
