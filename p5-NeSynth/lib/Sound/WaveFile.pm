@@ -44,7 +44,7 @@ sub _nor_to_16 {
 
 sub save_as_wav {
 	my $file_name = shift;
-	my $samples_per_sec = shift; # 周波数
+	my $samples_per_sec = shift; # サンプリング周波数
 	my $bits_per_sample = shift; # 量子化ビット数
 	my $samples_ref = shift;
 
@@ -66,7 +66,7 @@ sub save_as_wav {
 	my $size = scalar(@{$samples_ref}) * $block_size;
 	my $header =
 		  'RIFF' # chunkID
-		. pack('L', ($size + 32)) # chunkSize
+		. pack('L', ($size + 36)) # chunkSize
 		. 'WAVE'; # formType
 	my $fmt_chunk =
 		  'fmt ' # chunkID
